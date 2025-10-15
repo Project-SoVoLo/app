@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import axios from './api/axios';
+import axios from '../../api/axios';
 
 export default function NoticeDetail() {
   const router = useRouter();
@@ -63,6 +63,12 @@ export default function NoticeDetail() {
 
   useEffect(() => {
     if (!postId) return;
+
+    if(!authToken){
+      Alert.alert('인증 오류', '로그인이 필요합니다.');
+      router.replace('/login');
+      return;
+    }
     setLoading(true);
     axios.get(`/api/notice/${postId}`)
       .then(res => {
@@ -129,7 +135,7 @@ export default function NoticeDetail() {
     return (
       <View style={styles.container}>
         <Text>공지사항이 존재하지 않습니다.</Text>
-        <Button title="뒤로가기" onPress={() => router.back()} />
+        <Button title="뒤로가기" onPress={() => router.replace('/(tabs)/(Community)/community')} />
       </View>
     );
   }
@@ -158,7 +164,7 @@ export default function NoticeDetail() {
       <Text style={styles.title}>{notice.title}</Text>
       <Text style={styles.date}>{notice.date}</Text>
       <Text style={styles.content}>{notice.content}</Text>
-      <Button title="뒤로가기" onPress={() => router.back()} />
+      <Button title="뒤로가기" onPress={() => router.replace('/(tabs)/(Community)/community')} />
 
       {/* 옵션 메뉴 모달 */}
       <Modal
@@ -224,16 +230,36 @@ export default function NoticeDetail() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 12 },
-  date: { fontSize: 14, color: '#666', marginBottom: 20 },
-  content: { fontSize: 16, lineHeight: 22 },
+
+  container: { 
+    flex: 1, 
+    padding: 16, 
+    backgroundColor: '#fff' 
+  },
+
+  title: { 
+    fontSize: 22, 
+    fontWeight: 'bold',
+    marginBottom: 12 },
+
+  date: { 
+    fontSize: 14, 
+    color: '#666', 
+    marginBottom: 20 
+  },
+
+  content: { 
+    fontSize: 16, 
+    lineHeight: 22 
+  },
+
   modalBackdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.3)',
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   optionsModal: {
     backgroundColor: '#f2f2f2',
     borderRadius: 10,
@@ -242,23 +268,27 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginRight: 24,
   },
+
   optionItem: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 18,
   },
+
   optionText: {
     fontSize: 15,
     marginLeft: 10,
     color: '#222',
   },
+
   editModal: {
     backgroundColor: '#fff',
     padding: 16,
     borderRadius: 10,
     width: 300,
   },
+
   input: {
     borderWidth: 1,
     borderColor: '#bbb',
@@ -269,8 +299,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: '#fafafa',
   },
+
   modalButton: {
     paddingHorizontal: 12,
     paddingVertical: 8,
-  },
+  }
+
 });

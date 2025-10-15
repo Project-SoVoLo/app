@@ -244,6 +244,6 @@ const styles = StyleSheet.create({
   linkButtonText: {
     color: '#007bff',
     fontSize: 16,
-  },
+  }
 
 });

@@ -1,14 +1,14 @@
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  View,
+  Alert,
+  ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-  Alert,
-  ScrollView
+  View
 } from 'react-native';
-import { useRouter } from 'expo-router';
 import axios from './api/axios';
 
 export default function Join() {
@@ -136,10 +136,12 @@ export default function Join() {
 }
 
 const styles = StyleSheet.create({
+
   safeArea: {
     flex: 1,
     backgroundColor: '#fff',
   },
+
   container: {
     flexGrow: 1,
     justifyContent: 'center',
@@ -147,11 +149,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 30,
   },
+
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 30,
   },
+
   input: {
     width: '100%',
     height: 50,
@@ -162,12 +166,14 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 16,
   },
+
   genderContainer: {
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
     marginBottom: 20,
   },
+
   genderButton: {
     flex: 1,
     height: 50,
@@ -177,18 +183,22 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
   },
+
   genderButtonSelected: {
     backgroundColor: '#007bff',
     borderColor: '#007bff',
   },
+
   genderButtonText: {
     fontSize: 16,
     color: '#333',
   },
+
   genderButtonTextSelected: {
     color: '#fff',
     fontWeight: 'bold',
   },
+
   button: {
     width: '100%',
     height: 50,
@@ -198,16 +208,20 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 10,
   },
+
   buttonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
+
   linkButton: {
     marginTop: 20,
   },
+
   linkButtonText: {
     color: '#007bff',
     fontSize: 16,
-  },
+  }
+  
 });

@@ -2,9 +2,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native';
-import axios from './api/axios';
+import axios from '../../api/axios';
 
-export default function NoticeWrite() {
+export default function InquiryWrite() {
   const router = useRouter();
 
   const [title, setTitle] = useState('');
@@ -16,6 +16,7 @@ export default function NoticeWrite() {
 
   useEffect(() => {
     AsyncStorage.getItem('token').then(token => setAuthToken(token));
+    AsyncStorage.getItem('userEmail').then(email=>setEmail(email))
   }, []);
 
   const handleSubmit = async () => {
@@ -23,19 +24,20 @@ export default function NoticeWrite() {
       Alert.alert('로그인 필요', '로그인 후 이용 가능합니다.');
       return;
     }
-    if (!title.trim() || !content.trim()) {
-      Alert.alert('입력 오류', '제목, 내용을 모두 입력하세요.');
+    if (!title.trim() || !content.trim() || !password) {
+      Alert.alert('입력 오류', '제목, 내용, 비밀번호를 모두 입력하세요.');
       return;
     }
     setLoading(true);
     try {
       const res = await axios.post(
-        '/api/notice',
-        { title, content},
-        { headers: { Authorization: `Bearer ${authToken}`} }
+        '/api/inquiry',
+        { title, content, password },
+        { headers: { Authorization: `Bearer ${authToken}` , 
+        'X-User-Id': email} }
       );
-      Alert.alert('등록 완료', '공지사항이 등록되었습니다.', [
-        { text: '확인', onPress: () => router.replace('/noticelist') }
+      Alert.alert('등록 완료', '건의사항이 등록되었습니다.', [
+        { text: '확인', onPress: () => router.replace('/inquirylist') }
       ]);
     } catch (e) {
       if (e.response) {
@@ -49,7 +51,7 @@ export default function NoticeWrite() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>공지사항 작성</Text>
+      <Text style={styles.title}>건의사항 작성</Text>
       <TextInput
         style={styles.input}
         placeholder="제목"
@@ -63,6 +65,14 @@ export default function NoticeWrite() {
         value={content}
         onChangeText={setContent}
         multiline
+        editable={!loading}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="비밀번호 (숫자 또는 문자, 글 열람/삭제시 필요)"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
         editable={!loading}
       />
       <Button title="등록하기" onPress={handleSubmit} disabled={loading || !authToken} />

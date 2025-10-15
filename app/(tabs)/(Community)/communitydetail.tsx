@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Image, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import axios from './api/axios';
+import axios from '../../api/axios';
 
 export default function CommunityDetail() {
   const router = useRouter();
@@ -137,7 +137,7 @@ export default function CommunityDetail() {
     setOptionsVisible(false);
   };
 
-  // 댓글 작성
+  //댓글 작성
   const handleAddComment = async () => {
     if (!authToken) {
       Alert.alert('로그인 필요', '로그인 후 이용 바랍니다.');
@@ -152,7 +152,7 @@ export default function CommunityDetail() {
         { userId, content: commentInput },
         { headers: { Authorization: `Bearer ${authToken}` } }
       );
-      // 댓글 등록 직후 최신 댓글 목록 재조회
+      //댓글 등록 직후 최신 댓글 목록 재조회
       const res = await axios.get(`/api/community-posts/${id}/comments`);
       setComments(res.data);
       setCommentInput('');
@@ -174,7 +174,7 @@ export default function CommunityDetail() {
       { content: editCommentContent },
       { headers: { Authorization: `Bearer ${authToken}` } }
     );
-    // 성공 시 최신 목록 재조회
+    //성공 시 최신 목록 재조회
     const res = await axios.get(`/api/community-posts/${id}/comments`);
     setComments(res.data);
     setEditCommentModalVisible(false);
@@ -210,7 +210,7 @@ export default function CommunityDetail() {
             await axios.delete(`/api/community-posts/${id}/comments/${commentId}`, {
               headers: { Authorization: `Bearer ${authToken}` }
             });
-            // 삭제 후 최신 댓글 목록 재로드
+            //삭제 후 최신 댓글 목록 재로드
             const res = await axios.get(`/api/community-posts/${id}/comments`);
             setComments(res.data);
             Alert.alert('완료', '댓글이 삭제되었습니다.');
@@ -261,7 +261,7 @@ export default function CommunityDetail() {
     return (
       <View style={styles.container}>
         <Text>게시글이 존재하지 않습니다.</Text>
-        <Button title="뒤로가기" onPress={() => router.back()} />
+        <Button title="뒤로가기" onPress={() => router.replace('/(tabs)/(Community)/community')} />
       </View>
     );
   }
@@ -339,7 +339,7 @@ export default function CommunityDetail() {
         </View>
       )}
 
-      {/*댓글 수정 모달*/}
+      {/* 댓글 수정 모달 */}
       <Modal
         visible={editCommentModalVisible}
         transparent
@@ -385,7 +385,7 @@ export default function CommunityDetail() {
           />
         </View>
 
-      <Button title="뒤로가기" onPress={() => router.back()} />
+      <Button title="뒤로가기" onPress={() => router.replace('/(tabs)/(Community)/community')} />
 
       <Modal
         visible={optionsVisible}
@@ -449,23 +449,76 @@ export default function CommunityDetail() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 12 },
-  date: { fontSize: 14, color: '#666', marginBottom: 12 },
-  content: { fontSize: 16, lineHeight: 22, marginBottom: 6 },
-  image: { width: '100%', height: 160, borderRadius: 7, marginBottom: 12 },
-  commentsSection: { marginTop: 24 },
-  commentsTitle: { fontWeight: '600', marginBottom: 8 },
-  commentItem: { marginBottom: 8 },
-  commentDate: { fontSize: 12, color: '#666' },
-  commentForm: { marginTop: 20 },
-  input: { borderColor: '#ccc', borderWidth: 1, borderRadius: 6, padding: 10, marginVertical: 16 },
+
+  container: { 
+    flex: 1, 
+    padding: 16, 
+    backgroundColor: '#fff', 
+    marginBottom:80 
+  },
+
+  title: { 
+    fontSize: 22, 
+    fontWeight: 'bold', 
+    marginBottom: 12 
+  },
+
+  date: { 
+    fontSize: 14, 
+    color: '#666', 
+    marginBottom: 12 
+  },
+  
+  content: { 
+    fontSize: 16, 
+    lineHeight: 22, 
+    marginBottom: 6 
+  },
+
+  image: { 
+    width: '100%', 
+    height: 160, 
+    borderRadius: 7, 
+    marginBottom: 12 
+  },
+
+  commentsSection: { 
+    marginTop: 24 
+  },
+
+  commentsTitle: { 
+    fontWeight: '600', 
+    marginBottom: 8 
+  },
+
+  commentItem: { 
+    marginBottom: 8 
+  },
+
+  commentDate: { 
+    fontSize: 12, 
+    color: '#666' 
+  },
+
+  commentForm: { 
+    marginTop: 20 
+  },
+
+  input: { 
+    borderColor: '#ccc', 
+    borderWidth: 1, 
+    borderRadius: 6, 
+    padding: 10, 
+    marginVertical: 16 
+  },
+
   modalBackdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.3)',
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   optionsModal: {
     backgroundColor: '#f2f2f2',
     borderRadius: 10,
@@ -474,25 +527,30 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginRight: 24,
   },
+
   optionItem: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 18,
   },
+
   optionText: {
     fontSize: 15,
     marginLeft: 10,
     color: '#222',
   },
+
   editModal: {
     backgroundColor: '#fff',
     padding: 16,
     borderRadius: 10,
     width: 300,
   },
+
   modalButton: {
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
+  
 });

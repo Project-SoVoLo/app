@@ -44,7 +44,7 @@ export default function TabsLayout() {
       <Tabs.Screen name="chatbot" options={{ title: "Chatbot" }} />
       <Tabs.Screen name="diagnosis" options={{ title: "Diagnosis" }} />
       <Tabs.Screen name="mindcare" options={{ title: "Mindcare" }} />
-      <Tabs.Screen name="community" options={{ title: "Community" }} />
+      <Tabs.Screen name="(Community)" options={{ title: "Community" }} />
     </Tabs>
   );
 }

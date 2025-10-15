@@ -6,12 +6,17 @@ import { Alert, DeviceEventEmitter, StyleSheet, Text, TouchableOpacity, View } f
 export default function ProfileScreen() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState('');
+  const [role, setRole] = useState('');
 
   useEffect(() => {
     const fetchUserEmail = async () => {
       const email = await AsyncStorage.getItem('userEmail');
+      const role = await AsyncStorage.getItem('role');
       if (email) {
         setUserEmail(email);
+      }
+      if(role){
+        setRole(role);
       }
     };
     fetchUserEmail();
@@ -65,7 +70,8 @@ export default function ProfileScreen() {
           <Text style={styles.infoLabel}>이메일</Text>
           <Text style={styles.infoText}>{userEmail || '정보 없음'}</Text>
         </View>
-
+      {role!='ADMIN' &&( //관리자일 경우 로그아웃만 표시
+        <>
         <TouchableOpacity style={styles.Button} onPress={()=>router.replace('/mypage/account')}>
           <Text style={styles.ButtonText}>계정</Text>
         </TouchableOpacity>
@@ -83,7 +89,8 @@ export default function ProfileScreen() {
         <TouchableOpacity style={styles.Button} onPress={()=>router.replace('/mypage/condition')}>
           <Text style={styles.ButtonText}>호전 상태</Text>
         </TouchableOpacity>
-        
+        </>
+      )}
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutButtonText}>로그아웃</Text>
         </TouchableOpacity>
@@ -93,30 +100,37 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     backgroundColor: '#fff',
   },
+
   content: {
     flex: 1,
     padding: 20,
   },
+
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 30,
   },
+
   infoBox: {
     marginBottom: 20,
   },
+
   infoLabel: {
     fontSize: 16,
     color: '#888',
   },
+
   infoText: {
     fontSize: 20,
     marginTop: 4,
   },
+
   Button: {
     marginTop: 20,
     backgroundColor: '#f2f2f2',
@@ -124,11 +138,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
   },
+
   ButtonText: {
     color: '#000',
     fontSize: 18,
     fontWeight: 'bold',
   },
+
   logoutButton: {
     marginTop: 30,
     backgroundColor: '#dc3545',
@@ -136,17 +152,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
   },
+
   logoutButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
+
   backButton: {
         marginBottom: 16,
-    },
+  },
+
         
   backButtonText: {
       fontSize: 16,
       color: "#000",
-  },
+  }
+
 });

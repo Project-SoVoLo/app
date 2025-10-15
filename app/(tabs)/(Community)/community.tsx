@@ -1,8 +1,10 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useRouter } from 'expo-router';
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import axios from '../api/axios';
+import axios from '../../api/axios';
+
 
 const getLatest = (data, n) =>
   [...data].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, n);
@@ -30,38 +32,66 @@ export default function Community() {
   const [detailLoading, setDetailLoading] = useState(false);
   const router = useRouter();
 
-useFocusEffect(
-  useCallback(() => {
-    setLoading(true);
-    Promise.all([
-      axios.get('/api/notice'),
-      axios.get('/api/inquiry/all'),
-      axios.get('/api/community-posts')
-    ])
-    .then(([noticeRes, suggestionRes, communityRes]) => {
-      const noticesData = Array.isArray(noticeRes.data) ? noticeRes.data : [];
-      const suggestionsData = Array.isArray(suggestionRes.data) ? suggestionRes.data : [];
-      const communityData = Array.isArray(communityRes.data) ? communityRes.data : [];
-      setNotices(getLatest(uniqueByPostId(noticesData), 3));
-      setSuggestions([...suggestionsData].reverse().slice(0, 3));
-      const sortedCommunity = [...communityData]
-        .sort((a, b) => {
-          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : -Infinity;
-          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : -Infinity;
-          return dateB - dateA;
-          })
-          .slice(0, 3);
-        setCommunity(sortedCommunity);
-    })
-    .catch(() => {
-      Alert.alert('오류', '정보를 불러오지 못했습니다.');
-      setNotices([]);
-      setSuggestions([]);
-    })
-    .finally(() => setLoading(false));
-  }, [token])
-);
+  useEffect(() => {
+    AsyncStorage.getItem('token').then(token => setToken(token));
+  }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+
+      if (!token) {
+        //비로그인 시 공지사항, 건의사항만 호출
+        Promise.all([
+          axios.get('/api/notice'),
+          axios.get('/api/inquiry/all')
+        ])
+        .then(([noticeRes, suggestionRes]) => {
+          const noticesData = Array.isArray(noticeRes.data) ? noticeRes.data : [];
+          const suggestionsData = Array.isArray(suggestionRes.data) ? suggestionRes.data : [];
+          setNotices(getLatest(uniqueByPostId(noticesData), 3));
+          setSuggestions([...suggestionsData].reverse().slice(0, 3));
+          setCommunity([]);
+        })
+        .catch(() => {
+          Alert.alert('오류', '정보를 불러오지 못했습니다.');
+          setNotices([]);
+          setSuggestions([]);
+          setCommunity([]);
+        })
+        .finally(() => setLoading(false));
+      } else {
+        //로그인 시 전부 호출
+        Promise.all([
+          axios.get('/api/notice'),
+          axios.get('/api/inquiry/all'),
+          axios.get('/api/community-posts')
+        ])
+        .then(([noticeRes, suggestionRes, communityRes]) => {
+          const noticesData = Array.isArray(noticeRes.data) ? noticeRes.data : [];
+          const suggestionsData = Array.isArray(suggestionRes.data) ? suggestionRes.data : [];
+          const communityData = Array.isArray(communityRes.data) ? communityRes.data : [];
+          setNotices(getLatest(uniqueByPostId(noticesData), 3));
+          setSuggestions([...suggestionsData].reverse().slice(0, 3));
+          const sortedCommunity = [...communityData]
+            .sort((a, b) => {
+              const dateA = a.createdAt ? new Date(a.createdAt).getTime() : -Infinity;
+              const dateB = b.createdAt ? new Date(b.createdAt).getTime() : -Infinity;
+              return dateB - dateA;
+            })
+            .slice(0, 3);
+          setCommunity(sortedCommunity);
+        })
+        .catch(() => {
+          Alert.alert('오류', '정보를 불러오지 못했습니다.');
+          setNotices([]);
+          setSuggestions([]);
+          setCommunity([]);
+        })
+        .finally(() => setLoading(false));
+      }
+    }, [token])
+  );
 
   if (loading) {
     return (
@@ -75,7 +105,8 @@ useFocusEffect(
     <ScrollView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={styles.container}>
         <View style={styles.contentBox}>
-          {/* 공지사항 */}
+          
+          {/* 공지사항 목록 */}
           <View style={styles.sectionBox}>
             <TouchableOpacity onPress={() => router.push('/noticelist')}>
               <Text style={styles.sectionTitle}>공지사항</Text>
@@ -104,7 +135,8 @@ useFocusEffect(
               </TouchableOpacity>
             )) : <Text>게시글이 없습니다.</Text>}
           </View>
-          {/* 건의사항 */}
+
+          {/* 건의사항 목록 */}
           <View style={styles.sectionBox}>
             <TouchableOpacity onPress={() => router.push('/inquirylist')}>
               <Text style={styles.sectionTitle}>건의사항</Text>
@@ -121,11 +153,24 @@ useFocusEffect(
               </TouchableOpacity>
             )) : <Text>게시글이 없습니다.</Text>}
           </View>
+          
+            {/* 커뮤니티 목록 */}
             <View style={styles.sectionBox}>
-              <TouchableOpacity onPress={() => router.push('/communitylist')}>
+              <TouchableOpacity
+                disabled={!token}
+                onPress={() => token && router.push('/communitylist')}
+                style={[
+                  !token && { opacity: 0.5 }
+                ]}
+              >
                 <Text style={styles.sectionTitle}>커뮤니티</Text>
               </TouchableOpacity>
-              {community.length > 0 ? community.map((item, idx) => (
+              {!token ? 
+              <Text style=
+              {{ color: "#888", textAlign: "center" }}>
+                로그인 후 커뮤니티를 이용할 수 있습니다.
+                </Text>
+              : community.length > 0 ? community.map((item, idx) => (
                 <TouchableOpacity
                   key={item.id ?? idx}
                   onPress={() => router.push(`/communitydetail?id=${item.id}`)}
@@ -169,7 +214,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     paddingTop: 20,
-    marginBottom: 60,
+    marginBottom: 90,
   },
 
   contentBox: {

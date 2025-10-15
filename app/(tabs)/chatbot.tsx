@@ -34,7 +34,7 @@ export default function ChatScreen() {
           alertShown.current = true;
           Alert.alert(
             "인증 오류", 
-            "이 페이지에 접근하려면 로그인이 필요합니다.",
+            "로그인이 필요합니다.",
             [
               { text: "확인", onPress: () => router.replace('/login') }
             ]
@@ -258,11 +258,13 @@ export default function ChatScreen() {
 }
 
 const styles = StyleSheet.create({
+
   messagesArea: {
     flex: 1,
     paddingHorizontal: 12,
     marginTop: 20,
   },
+
   messageBubble: {
     borderRadius: 12,
     paddingHorizontal: 14,
@@ -270,22 +272,27 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     maxWidth: '80%',
   },
+
   userBubble: {
     backgroundColor: "#007AFF",
     alignSelf: "flex-end",
   },
+  
   botBubble: {
     backgroundColor: "#f2f2f2",
     alignSelf: "flex-start",
   },
+
   userText: {
     color: "#fff",
     fontSize: 16,
   },
+
   botText: {
     color: "#000",
     fontSize: 16,
   },
+
   inputBar: {
     flexDirection: "row",
     alignItems: "center",
@@ -296,10 +303,12 @@ const styles = StyleSheet.create({
     borderColor: "#E5E5EA",
     backgroundColor: "#F8F8F8"
   },
+
   voiceBtn: {
     padding: 8,
     marginRight: 5,
   },
+
   input: {
     flex: 1,
     borderWidth: 1,
@@ -311,6 +320,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     fontSize: 16,
   },
+
   sendBtn: {
     backgroundColor: "#007AFF",
     borderRadius: 20,
@@ -318,14 +328,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   loadingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
   },
+
   loadingText: {
     marginLeft: 10,
     color: '#666'
   }
+  
 });

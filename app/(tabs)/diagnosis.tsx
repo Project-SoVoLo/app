@@ -167,12 +167,14 @@ export default function SelfCheck() {
 }
 
 const styles = StyleSheet.create({
+
     container: {
         flex: 1,
         backgroundColor: "#fff",
         paddingHorizontal: 16,
         paddingTop: 20,
     },
+
     item: {
         backgroundColor: "#f2f2f2",
         height: 44,
@@ -182,27 +184,33 @@ const styles = StyleSheet.create({
         marginVertical: 6,
         marginBottom: 15,
     },
+
     itemText: {
         fontSize: 18,
         color: "#000",
         fontWeight: "500",
     },
+
     backButton: {
         marginBottom: 16,
     },
+
     backButtonText: {
         fontSize: 16,
         color: "#000",
     },
+
     title: {
         fontSize: 28,
         fontWeight: "bold",
         marginBottom: 30,
         color: "#000",
     },
+
     questionsContainer: {
         paddingBottom: 10,
     },
+
     questionBox: {
         backgroundColor: "#f2f2f2",
         borderRadius: 12,
@@ -214,16 +222,19 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 1,
     },
+
     questionText: {
         fontSize: 15,
         color: "#000",
         marginBottom: 12,
     },
+
     answerRow: {
         flexDirection: "row",
         justifyContent: "space-between",
         marginTop: 8,
     },
+
     answerButton: {
         flexDirection: "row",
         alignItems: "center",
@@ -231,11 +242,13 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 0,
     },
+
     answerLabel: {
         fontSize: 10,
         color: "#000",
         flexShrink: 1,
     },
+
     radioOuter: {
         width: 12,
         height: 12,
@@ -246,26 +259,31 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         marginRight: 6,
     },
+
     radioOuterSelected: {
         borderColor: "#000",
     },
+
     radioInner: {
         width: 8,
         height: 8,
         borderRadius: 6,
         backgroundColor: "#000",
     },
+
     submitButton: {
         backgroundColor: "#f2f2f2",
         borderRadius: 20,
         paddingVertical: 14,
         alignItems: "center",
         marginTop: 10,
-        marginBottom: 10,
+        marginBottom: 90,
     },
+
     submitButtonText: {
         fontWeight: "700",
         fontSize: 18,
         color: "#000",
-    },
+    }
+    
 });

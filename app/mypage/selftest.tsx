@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { View, Text, StyleSheet ,TouchableOpacity, ScrollView, Alert} from "react-native";
-import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useMemo, useState } from "react";
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import axios from "../api/axios";
 
 export default function SelfTest() {
@@ -123,6 +123,7 @@ export default function SelfTest() {
         ) : (
           !loading && <Text>조회 가능한 내역이 없습니다.</Text>
         )} */}
+         
 const styles = StyleSheet.create({
     container: {
         flex: 1,

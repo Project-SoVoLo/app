@@ -3,7 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Image, StyleSheet, Text, TextInput, View } from 'react-native';
-import axios from './api/axios';
+import axios from '../../api/axios';
 
 export default function CommunityWrite() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function CommunityWrite() {
     AsyncStorage.getItem('token').then(token => setAuthToken(token));
   }, []);
 
-  // 이미지 선택 및 미리보기
+  //이미지 선택 및 미리보기
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -32,11 +32,11 @@ export default function CommunityWrite() {
     });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
-      setImageAsset(result.assets[0]); // asset: { uri, ... }
+      setImageAsset(result.assets[0]);
     }
   };
 
-  // 게시글 등록 요청
+  //게시글 등록 요청
   const handleSubmit = async () => {
     if (!authToken) {
       Alert.alert('로그인 필요', '로그인 후 작성 가능합니다.');
@@ -106,8 +106,19 @@ export default function CommunityWrite() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 20 },
+
+  container: { 
+    flex: 1, 
+    padding: 16, 
+    backgroundColor: '#fff' 
+  },
+
+  title: { 
+    fontSize: 22, 
+    fontWeight: 'bold', 
+    marginBottom: 20 
+  },
+
   input: {
     borderWidth: 1,
     borderColor: '#bbb',
@@ -118,4 +129,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: '#fafafa',
   },
+  
 });

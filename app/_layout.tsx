@@ -85,6 +85,7 @@ export default function RootLayout() {
 }
 
 const styles = StyleSheet.create({
+  
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -93,6 +94,7 @@ const styles = StyleSheet.create({
     height: 56,
     backgroundColor: "#ffff",
   },
+
   logoBox: {
     width: 70,
     height: 40,
@@ -101,6 +103,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 8,
   },
+
   profileBox: {
     width: 80,
     height: 40,
@@ -108,5 +111,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,
-  },
+  }
+
 });

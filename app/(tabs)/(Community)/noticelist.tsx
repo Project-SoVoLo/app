@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import axios from './api/axios';
+import axios from '../../api/axios';
 
 export default function NoticeList() {
   const [notices, setNotices] = useState([]);
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
 
   noticeItem: {
     padding: 12,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#ddd',
     borderRadius: 8,
     marginBottom: 12,
@@ -144,6 +144,6 @@ const styles = StyleSheet.create({
 
   addButton: { 
     marginBottom: 16,
-    },
+    }
 
 });

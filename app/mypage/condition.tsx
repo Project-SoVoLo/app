@@ -56,14 +56,14 @@ export default function Condition() {
     }, {});
   }, [data]);
 
-  // 차트 x축 라벨로 사용 (변환된 날짜)
+  //차트 x축 라벨로 사용 (변환된 날짜)
   const allDates = useMemo(() => {
     if (!data) return [];
     const dateSet = new Set(data.map(item => formatDate(item.diagnosisDate)));
     return Array.from(dateSet).sort((a, b) => new Date(a) - new Date(b));
   }, [data]);
 
-  // 차트 데이터 생성
+  //차트 데이터 생성
   const getChartDataForType = (items) => {
     const scoreMap = {};
     items.forEach(item => {

@@ -6,18 +6,41 @@ import axios from '../api/axios';
 
 export default function MainPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const [posts, setPosts] = useState([]);
   const [likes, setLikes] = useState([]);
   const [bookmarks, setBookmarks] = useState([]);
   const [cardNews, setCardNews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState('');
   const router = useRouter();
 
-  // 로그인 상태 체크 및 이벤트 구독
+  // AsyncStorage 확인용
+  //   useEffect(() => {
+  //   const printAllStorage = async () => {
+  //     try {
+  //       const keys = await AsyncStorage.getAllKeys();
+  //       if (keys.length === 0) {
+  //         console.log('AsyncStorage: 없음');
+  //         return;
+  //       }
+  //       const items = await AsyncStorage.multiGet(keys);
+  //       items.forEach(([key, value]) => {
+  //         console.log(`${key}: ${value !== null ? value : 'null'}`);
+  //       });
+  //     } catch (e) {
+  //       console.error('AsyncStorage 오류:', e);
+  //     }
+  //   };
+  
+  //   printAllStorage();
+  // }, []);
+
+  //로그인 상태 체크 및 이벤트 구독
   useEffect(() => {
     const checkLogin = async () => {
       const token = await AsyncStorage.getItem('token');
+      const role = await AsyncStorage.getItem('role');
+      setRole(role);
       setIsLoggedIn(!!token);
     };
 
@@ -30,7 +53,7 @@ export default function MainPage() {
   useFocusEffect(
     useCallback(() => {
       setLoading(true);
-      if (isLoggedIn) {
+      if (isLoggedIn && role !== 'ADMIN') { //사용자인 경우
         Promise.all([
           axios.get('/api/mypage/community-posts'),
           axios.get('/api/mypage/likes'),
@@ -39,28 +62,41 @@ export default function MainPage() {
         ])
           .then(([postsRes, likesRes, bookmarksRes, cardRes]) => {
             setPosts(Array.isArray(postsRes.data) ? postsRes.data : []);
-            setLikes(Array.isArray(likesRes.data) ? likesRes.data : []);
+            
+            //좋아요 목록 최신순 정렬
+            const sortedLikes = (Array.isArray(likesRes.data) ? likesRes.data : []).sort((a, b) => {
+              const aDate = new Date(a.date || a.createdAt);
+              const bDate = new Date(b.date || b.createdAt);
+              return bDate - aDate;
+            });
+            //좋아요 목록 공지사항, 커뮤니티 나누기
+            const noticeLikes = sortedLikes.filter(item => !item.hasOwnProperty('blocks') || item.blocks === null);
+            const communityLikes = sortedLikes.filter(item => item.hasOwnProperty('blocks') && item.blocks !== null);
+            
+
+            setLikes(sortedLikes);
+
             setBookmarks(Array.isArray(bookmarksRes.data) ? bookmarksRes.data : []);
             setCardNews(Array.isArray(cardRes.data) ? cardRes.data.slice(0, 3) : []);
           })
           .catch(() => {
-            Alert.alert('오류', '정보를 불러오지 못했습니다.');
+            Alert.alert('오류', '정보를 불러오지 못했습니다.1');
             setPosts([]); setLikes([]); setBookmarks([]); setCardNews([]);
           })
           .finally(() => setLoading(false));
-      } else {
+      } else { //비로그인 또는 관리자
         axios.get('/api/card')
           .then(cardRes => {
             setCardNews(Array.isArray(cardRes.data) ? cardRes.data.slice(0, 3) : []);
           })
           .catch(() => {
-            Alert.alert('오류', '카드뉴스 정보를 불러오지 못했습니다.');
+            Alert.alert('오류', '카드뉴스 정보를 불러오지 못했습니다.2');
             setCardNews([]);
           })
           .finally(() => setLoading(false));
         setPosts([]); setLikes([]); setBookmarks([]);
       }
-    }, [isLoggedIn])
+    }, [isLoggedIn, role])
   );
 
   if (loading) {
@@ -75,81 +111,101 @@ export default function MainPage() {
     <ScrollView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={styles.container}>
         <View style={styles.contentBox}>
-          {/* 내가 작성한 글(커뮤니티만) */}
+
+          {/* 내가 작성한 글 목록 */}
           <View style={styles.sectionBox}>
             <Text style={styles.sectionTitle}>내가 작성한 글</Text>
             {isLoggedIn
-              ? (posts.length > 0
-                  ? posts.map((item, idx) => (
-                      <TouchableOpacity 
-                        style={styles.postItem} 
-                        key={item.id ?? idx}
-                        onPress={() => router.push(`/communitydetail?id=${item.id}`)}
-                      >
-                        <Text style={styles.postTitle}>{item.title}</Text>
-                        <Text style={styles.postUser}>{item.date}</Text>
-                      </TouchableOpacity>
-                  ))
-                  : <Text>작성한 글이 없습니다.</Text>
-                )
+              ? (role === 'ADMIN' ? (
+                <Text>관리자는 작성한 글을 볼 수 없습니다.</Text>
+              ) : posts.length > 0
+                ? posts.map((item, idx) => (
+                  <TouchableOpacity
+                    style={styles.postItem}
+                    key={item.id ?? idx}
+                    onPress={() => router.push(`/communitydetail?id=${item.id}`)}
+                  >
+                    <Text style={styles.postTitle}>{item.title}</Text>
+                    <Text style={styles.postUser}>{item.date}</Text>
+                  </TouchableOpacity>
+                ))
+                : <Text>작성한 글이 없습니다.</Text>
+              )
               : <Text>작성한 글을 보려면 로그인이 필요합니다.</Text>
             }
           </View>
-          {/* 좋아요 목록(커뮤니티/공지) */}
+
+          {/* 좋아요 목록 => 혼란방지용 공지사항, 커뮤니티 섹션 나누기 */}
           <View style={styles.sectionBox}>
             <Text style={styles.sectionTitle}>좋아요 목록</Text>
             {isLoggedIn
-              ? (likes.length > 0
-                  ? likes.map((item, idx) => (
+              ? (role === 'ADMIN' ? (
+                <Text>관리자는 좋아요한 글을 볼 수 없습니다.</Text>
+              ) : (
+                <>
+                  {/* 공지사항 */}
+                  <Text style={styles.subSectionTitle}>공지사항</Text>
+                  {likes.filter(item => !item.hasOwnProperty('blocks') || item.blocks === null).length > 0 ? (
+                    likes.filter(item => !item.hasOwnProperty('blocks') || item.blocks === null).map((item, idx) => (
                       <TouchableOpacity
                         style={styles.postItem}
-                        key={item.postId ?? item.id ?? idx}
-                        onPress={() => {
-                          // blocks 필드 존재 여부로 분기하여 커뮤니티 or 공지
-                          if (item.hasOwnProperty('blocks')) {
-                            // blocks 필드가 있어도 null일 수 있으므로 null 체크
-                            if (item.blocks !== null) {
-                              router.push(`/communitydetail?id=${item.id ?? item.postId}`);
-                            } else {
-                              router.push(`/noticedetail?postId=${item.postId ?? item.id}`);
-                            }
-                          } else {
-                            // blocks 필드 자체가 없으면 공지글로 간주
-                            router.push(`/noticedetail?postId=${item.postId ?? item.id}`);
-                          }
-                        }}
+                        key={`notice-${item.id ?? item.postId ?? idx}`}
+                        onPress={() => router.push(`/noticedetail?postId=${item.postId ?? item.id}`)}
                       >
                         <Text style={styles.postTitle}>{item.title}</Text>
-                        <Text style={styles.postUser}>{item.date}</Text>
+                        <Text style={styles.postUser}>{item.date || item.createdAt}</Text>
                       </TouchableOpacity>
                     ))
-                  : <Text>좋아요 한 글이 없습니다.</Text>
-                )
+                  ) : (
+                    <Text>좋아요한 공지사항 글이 없습니다.</Text>
+                  )}
+
+                  {/* 커뮤니티 */}
+                  <Text style={styles.subSectionTitle}>커뮤니티</Text>
+                  {likes.filter(item => item.hasOwnProperty('blocks') && item.blocks !== null).length > 0 ? (
+                    likes.filter(item => item.hasOwnProperty('blocks') && item.blocks !== null).map((item, idx) => (
+                      <TouchableOpacity
+                        style={styles.postItem}
+                        key={`community-${item.id ?? item.postId ?? idx}`}
+                        onPress={() => router.push(`/communitydetail?id=${item.id ?? item.postId}`)}
+                      >
+                        <Text style={styles.postTitle}>{item.title}</Text>
+                        <Text style={styles.postUser}>{item.date || item.createdAt}</Text>
+                      </TouchableOpacity>
+                    ))
+                  ) : (
+                    <Text>좋아요한 커뮤니티 글이 없습니다.</Text>
+                  )}
+                </>
+              ))
               : <Text>좋아요한 글을 보려면 로그인이 필요합니다.</Text>
             }
           </View>
 
-          {/* 북마크 목록(커뮤니티만) */}
+          {/* 북마크 목록 */}
           <View style={styles.sectionBox}>
             <Text style={styles.sectionTitle}>북마크 목록</Text>
             {isLoggedIn
-              ? (bookmarks.length > 0
-                  ? bookmarks.map((item, idx) => (
-                      <TouchableOpacity
-                        style={styles.postItem}
-                        key={item.id ?? idx}
-                        onPress={() => router.push(`/communitydetail?id=${item.id}`)}
-                      >
-                        <Text style={styles.postTitle}>{item.title}</Text>
-                        <Text style={styles.postUser}>{item.date}</Text>
-                      </TouchableOpacity>
-                  ))
-                  : <Text>북마크한 글이 없습니다.</Text>
-                )
+              ? (role === 'ADMIN' ? (
+                <Text>관리자는 북마크한 글을 볼 수 없습니다.</Text>
+              ) : bookmarks.length > 0
+                ? bookmarks.map((item, idx) => (
+                  <TouchableOpacity
+                    style={styles.postItem}
+                    key={item.id ?? idx}
+                    onPress={() => router.push(`/communitydetail?id=${item.id}`)}
+                  >
+                    <Text style={styles.postTitle}>{item.title}</Text>
+                    <Text style={styles.postUser}>{item.date}</Text>
+                  </TouchableOpacity>
+                ))
+                : <Text>북마크한 글이 없습니다.</Text>
+              )
               : <Text>북마크한 글을 보려면 로그인이 필요합니다.</Text>
             }
           </View>
-          {/* 카드뉴스 3개만 표시: 로그인 불필요 */}
+
+          {/* 카드뉴스 목록 */}
           <View style={styles.sectionBox}>
             <Text style={styles.CardSectionTitle}>카드뉴스</Text>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap' }}>
@@ -168,15 +224,107 @@ export default function MainPage() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff", alignItems: "center", paddingTop: 20 },
-  contentBox: { flex: 0, width: "90%", borderRadius: 12, paddingBottom: 8, elevation: 1 },
-  sectionBox: { width: "100%", backgroundColor: "#f2f2f2", borderRadius: 10, padding: 10, marginBottom: 30 },
-  sectionTitle: { fontSize: 18, fontWeight: "bold", marginTop: 4, marginBottom: 6, marginLeft: 4, color: "#000" },
-  CardSectionTitle: { fontSize: 18, fontWeight: "bold", marginTop: 4, marginBottom: 10, marginLeft: 4, color: "#000" },
-  postItem: { backgroundColor: "#fff", padding: 11, marginVertical: 5, borderRadius: 8, alignItems: "flex-start", width: "99%", shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 2, elevation: 2 },
-  postTitle: { fontSize: 14, fontWeight: "bold", color: "#222", marginBottom: 3 },
-  postUser: { fontSize: 12, color: "#666" },
-  cardNewsItem: { width: "47%", backgroundColor: "#fff", padding: 8, borderRadius: 8, alignItems: "center", marginHorizontal: 2, marginBottom: 8, shadowColor: "#ccc", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.04, shadowRadius: 1, elevation: 1 },
-  cardImage: { width: "100%", height: 90, borderRadius: 7, marginBottom: 4 },
-  cardTitle: { fontSize: 13, textAlign: "center", color: "#333" }
+
+  container: { 
+    flex: 1, 
+    backgroundColor: "#fff", 
+    alignItems: "center", 
+    marginBottom:90 
+  },
+
+  contentBox: { 
+    flex: 0, width: "90%", 
+    borderRadius: 12, 
+    paddingBottom: 8, 
+    elevation: 1 
+  },
+
+  sectionBox: { 
+    width: "100%", 
+    backgroundColor: "#f2f2f2", 
+    borderRadius: 10, 
+    padding: 10, 
+    marginBottom: 30 
+  },
+
+  sectionTitle: { 
+    fontSize: 18, 
+    fontWeight: "bold", 
+    marginTop: 4, 
+    marginBottom: 6, 
+    marginLeft: 4, 
+    color: "#000" 
+  },
+
+  CardSectionTitle: { 
+    fontSize: 18, 
+    fontWeight: "bold", 
+    marginTop: 4, 
+    marginBottom: 10, 
+    marginLeft: 4, 
+    color: "#000" 
+  },
+
+  postItem: { 
+    backgroundColor: "#fff", 
+    padding: 11, 
+    marginVertical: 5, 
+    borderRadius: 8, 
+    alignItems: "flex-start", 
+    width: "99%", 
+    shadowColor: "#000", 
+    shadowOffset: { width: 0, height: 1 }, 
+    shadowOpacity: 0.08, 
+    shadowRadius: 2, 
+    elevation: 2 
+  },
+  
+    postTitle: { 
+    fontSize: 14, 
+    fontWeight: "bold", 
+    color: "#222", 
+    marginBottom: 3 
+  },
+
+  postUser: { 
+    fontSize: 12, 
+    color: "#666" 
+  },
+
+  cardNewsItem: { 
+    width: "47%", 
+    backgroundColor: "#fff", 
+    padding: 8, 
+    borderRadius: 8, 
+    alignItems: "center", 
+    marginHorizontal: 2, 
+    marginBottom: 8, 
+    shadowColor: "#ccc", 
+    shadowOffset: { width: 0, height: 1 }, 
+    shadowOpacity: 0.04, 
+    shadowRadius: 1, 
+    elevation: 1 
+  },
+  
+  cardImage: { 
+    width: "100%", 
+    height: 90, 
+    borderRadius: 7, 
+    marginBottom: 4 
+  },
+
+  cardTitle: { 
+    fontSize: 13, 
+    textAlign: "center", 
+    color: "#333" 
+  },
+
+  subSectionTitle: { 
+    fontSize: 15, 
+    fontWeight: 'bold', 
+    marginTop: 12, 
+    marginBottom: 4, 
+    color: '#1a1a1a' 
+  }
+
 });

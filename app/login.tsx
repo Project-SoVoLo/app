@@ -7,22 +7,24 @@ import React, { useEffect, useState } from 'react';
 import {
   Alert,
   DeviceEventEmitter,
+  Keyboard,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View
 } from 'react-native';
 import axios from './api/axios';
 
-// 환경 변수 가져오기 (app.json extra)
+//환경 변수 가져오기 (app.json extra)
 const KAKAO_REST_API_KEY = Constants.expoConfig?.extra?.KAKAO_REST_API_KEY;
 const REDIRECT_URI = makeRedirectUri({ useProxy: false }); //Expo 내부에서는 카카오 로그인이 안됨. : Redirect URI 설정 불가
 // console.log('Redirect URI:', REDIRECT_URI);
 
 
 
-// AuthRequest 파라미터(카카오 OAuth)
+//AuthRequest 파라미터(카카오 OAuth)
 const discovery = {
   authorizationEndpoint: 'https://kauth.kakao.com/oauth/authorize',
 };
@@ -33,7 +35,7 @@ export default function Login() {
   const router = useRouter();
   const [isAdminLogin, setIsAdminLogin] = useState(false);
 
-  // expo-auth-session 공식 OAuth 훅 방식
+  //expo-auth-session 공식 OAuth 훅 방식
   const [request, response, promptAsync] = useAuthRequest({
     clientId: KAKAO_REST_API_KEY,
     redirectUri: REDIRECT_URI,
@@ -41,7 +43,7 @@ export default function Login() {
     scopes: [],
   }, discovery);
 
-  // 카카오 로그인 OAuth 응답 후 처리
+  //카카오 로그인 OAuth 응답 후 처리
   useEffect(() => {
     if (response?.type === 'success' && response.params?.code) {
       const code = response.params.code;
@@ -73,7 +75,7 @@ export default function Login() {
 
   const handleSubmit = async () => {
     if (!email || !password) {
-      Alert.alert("입력 오류", "이메일과 비밀번호를 모두 입력해주세요.");
+      Alert.alert("입력 오류", "이메일과 비밀번호를 모두 입력해주세요.1");
       return;
     }
     try {
@@ -88,9 +90,10 @@ export default function Login() {
       await AsyncStorage.setItem('role',response.data.role);
       // console.log(response.data);
       // console.log(response.data.role);
-      console.log(response.data.token);
+      // console.log(response.data.token);
 
-      //nickname 별도 저장(커뮤니티용)
+      //nickname 별도 저장(커뮤니티용) -> UserLogin 시에만
+    if(!isAdminLogin){
       const profileRes = await axios.get('/api/mypage/profile', {
         headers: {
           Authorization: `Bearer ${response.data.token}`
@@ -99,19 +102,24 @@ export default function Login() {
       if (profileRes.data.nickname) {
         await AsyncStorage.setItem('nickname', profileRes.data.nickname);
       }
-
-
+    }
       Alert.alert('로그인 성공!', '메인 페이지로 이동합니다.');
       DeviceEventEmitter.emit('loginStateChange');
-      router.replace('/');
+
+    if(isAdminLogin)
+      router.replace('/') //관리자 대시보드로 연결 필요
+    else
+      router.replace('/')
+
     } catch (error) {
       // console.error("로그인 실패:", error.response ? error.response.data : error.message);
-      Alert.alert('로그인 실패', '이메일과 비밀번호를 확인해 주세요.');
+      Alert.alert('로그인 실패', '이메일과 비밀번호를 확인해 주세요.2');
     }
   };
   
 
   return (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> 
       <View style={styles.loginContainer}>
         <Text style={styles.title}>로그인</Text>
 
@@ -157,6 +165,7 @@ export default function Login() {
           <Text style={styles.buttonText}>회원가입</Text>
         </TouchableOpacity>
       </View>
+      </TouchableWithoutFeedback>
   );
 }
 
