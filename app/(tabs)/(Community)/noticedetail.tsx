@@ -13,6 +13,10 @@ export default function NoticeDetail() {
   const [loading, setLoading] = useState(true);
   const [authToken, setAuthToken] = useState(null);
   const [role, setRole] = useState('');
+  
+  //토큰 동기 비동기 문제 로딩 상태
+  const [authLoading, setAuthLoading] = useState(true);
+
   const [optionsVisible, setOptionsVisible] = useState(false);
 
   //수정 관련 상태
@@ -20,7 +24,7 @@ export default function NoticeDetail() {
   const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
 
-  // 좋아요 상태
+  //좋아요 상태
   const [liked, setLiked] = useState(notice?.liked ?? false);
   const [likeCount, setLikeCount] = useState(notice?.likeCount ?? 0);
 
@@ -32,7 +36,7 @@ export default function NoticeDetail() {
 }, [notice]);
 
 
-  // 좋아요 토글 함수
+  //좋아요 토글 함수
   const handleLike = async () => {
   try {
     const res = await axios.post(
@@ -45,7 +49,7 @@ export default function NoticeDetail() {
         },
       }
     );
-    // 서버 응답에 좋아요 상태와 카운트를 정확히 담아서 보내도록 백엔드 수정 필요
+    //서버 응답에 좋아요 상태와 카운트를 정확히 담아서 보내도록 백엔드 수정 필요
     if (res.data) {
       setLiked(Boolean(res.data.liked));
       setLikeCount(res.data.likeCount);
@@ -56,27 +60,40 @@ export default function NoticeDetail() {
   }
 };
 
-  useEffect(() => {
-    AsyncStorage.getItem('token').then(token => setAuthToken(token));
-    AsyncStorage.getItem('role').then(r => setRole(r || ''));
-  }, []);
+
+useEffect(() => {
+  const loadAuthData = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const role = await AsyncStorage.getItem('role');
+    setAuthToken(token ?? '');
+    setRole(role ?? '');
+    setAuthLoading(false);
+  };
+  loadAuthData();
+}, []);
+
 
   useEffect(() => {
-    if (!postId) return;
+  if (authLoading) return; //토큰 로딩
 
-    if(!authToken){
+  if (!postId || !authToken) {
+    if (!authToken) {
       Alert.alert('인증 오류', '로그인이 필요합니다.');
       router.replace('/login');
-      return;
     }
-    setLoading(true);
-    axios.get(`/api/notice/${postId}`)
-      .then(res => {
-        // console.log("Received notice ", res.data); //liked 수신 상태 확인용
-        setNotice(res.data)})
-      .catch(() => Alert.alert('오류', '공지사항 상세를 불러오지 못했습니다.'))
-      .finally(() => setLoading(false));
-  }, [postId]);
+    return;
+  }
+
+  //토큰 유무 확인 -> api 호출
+  setLoading(true);
+  axios.get(`/api/notice/${postId}`, {
+    headers: { Authorization: `Bearer ${authToken}` }
+  })
+    .then(res => setNotice(res.data))
+    .catch(() => Alert.alert('오류', '공지사항 상세를 불러오지 못했습니다.'))
+    .finally(() => setLoading(false));
+}, [postId, authToken, authLoading]);
+
 
 
   const isAdmin = (role ?? '').toLowerCase() === 'admin';

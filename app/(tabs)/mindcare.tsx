@@ -163,11 +163,11 @@ const styles = StyleSheet.create({
     fontSize: 15 
   },
   
-    map: {
-  width: '100%',
-  height: 200,
-  marginBottom: 10,
-  borderRadius: 10,
-}
+  map: {
+    width: '100%',
+    height: 200,
+    marginBottom: 10,
+    borderRadius: 10,
+  }
 
 });

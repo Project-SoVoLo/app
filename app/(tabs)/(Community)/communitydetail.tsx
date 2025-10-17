@@ -267,7 +267,11 @@ export default function CommunityDetail() {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={{ flex: 1, backgroundColor: "#fff" }}
+      contentContainerStyle={{ paddingBottom: 60 }}
+      >
+    <View style={styles.container}>
       {isOwner && (
       <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 8 }}>
         <TouchableOpacity onPress={() => setOptionsVisible(true)}>
@@ -444,6 +448,7 @@ export default function CommunityDetail() {
           </View>
         </View>
       </Modal>
+    </View>
     </ScrollView>
   );
 }
@@ -454,7 +459,6 @@ const styles = StyleSheet.create({
     flex: 1, 
     padding: 16, 
     backgroundColor: '#fff', 
-    marginBottom:80 
   },
 
   title: { 

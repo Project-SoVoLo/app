@@ -32,7 +32,7 @@ export default function InquiryList() {
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: "#fff" }}
-      contentContainerStyle={{ paddingBottom: 90 }}
+      contentContainerStyle={{ paddingBottom: 60 }}
     >
       <View style={styles.container}>
         <View style={styles.contentBox}>

@@ -32,6 +32,27 @@ export default function Community() {
   const [detailLoading, setDetailLoading] = useState(false);
   const router = useRouter();
 
+  //   useEffect(() => {
+  //     const printAllStorage = async () => {
+  //       try {
+  //         const keys = await AsyncStorage.getAllKeys();
+  //         if (keys.length === 0) {
+  //           console.log('AsyncStorage: 없음');
+  //           return;
+  //         }
+  //         const items = await AsyncStorage.multiGet(keys);
+  //         items.forEach(([key, value]) => {
+  //           console.log(`${key}: ${value !== null ? value : 'null'}`);
+  //         });
+  //       } catch (e) {
+  //         console.error('AsyncStorage 오류:', e);
+  //       }
+  //     };
+    
+  //     printAllStorage();
+  // }, []);
+
+
   useEffect(() => {
     AsyncStorage.getItem('token').then(token => setToken(token));
   }, []);
@@ -102,7 +123,10 @@ export default function Community() {
   }
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <ScrollView
+        style={{ flex: 1, backgroundColor: "#fff" }}
+        contentContainerStyle={{ paddingBottom: 60 }}
+        >
       <View style={styles.container}>
         <View style={styles.contentBox}>
           
@@ -214,7 +238,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     paddingTop: 20,
-    marginBottom: 90,
   },
 
   contentBox: {

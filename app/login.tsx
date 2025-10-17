@@ -90,7 +90,7 @@ export default function Login() {
       await AsyncStorage.setItem('role',response.data.role);
       // console.log(response.data);
       // console.log(response.data.role);
-      // console.log(response.data.token);
+      console.log(response.data.token);
 
       //nickname 별도 저장(커뮤니티용) -> UserLogin 시에만
     if(!isAdminLogin){

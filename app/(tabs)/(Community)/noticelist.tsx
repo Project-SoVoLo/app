@@ -50,7 +50,12 @@ export default function NoticeList() {
   }
 
   return (
-    <ScrollView style={styles.container}>
+  <ScrollView
+    style={{ flex: 1, backgroundColor: "#fff" }}
+    contentContainerStyle={{ paddingBottom: 60 }}
+    >
+    <View style={styles.container}>
+      <View style={styles.contentBox}>
       <Text style={styles.title}>공지사항 전체 목록</Text>
         <View style={styles.headerRow}>
 
@@ -88,17 +93,28 @@ export default function NoticeList() {
           </View>
           </TouchableOpacity>
         ))}
+        </View>
+        </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
 
-  container: { 
-    flex: 1, 
-    padding: 16, 
-    backgroundColor: '#fff' 
-    },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    paddingTop: 20,
+  },
+
+    contentBox: {
+    flex: 0,
+    width: "90%",
+    borderRadius: 12,
+    paddingBottom: 8,
+    elevation: 1,
+  },
 
   title: { 
     fontSize: 22, 

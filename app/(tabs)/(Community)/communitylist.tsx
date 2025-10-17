@@ -57,7 +57,7 @@ setNotices(sorted);
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: "#fff" }}
-      contentContainerStyle={{ paddingBottom: 90 }}
+      contentContainerStyle={{ paddingBottom: 60 }}
     >
       <View style={styles.container}>
         <View style={styles.contentBox}>
@@ -78,7 +78,7 @@ setNotices(sorted);
           </View>
           <View style={styles.sectionBox}>
             {notices.length === 0 ? (
-              <Text>공지사항이 없습니다.</Text>
+              <Text>커뮤니티가 없습니다.</Text>
             ) : (
               notices
                 .filter(item => !!item.title)

@@ -2,7 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Button, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import axios from '../../api/axios';
 
 export default function InquiryDetail() {
@@ -15,10 +15,9 @@ export default function InquiryDetail() {
   const [authToken, setAuthToken] = useState(null);
 
   const [optionsVisible, setOptionsVisible] = useState(false);
-
-  //삭제 비밀번호 입력 모달
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const [commentInput, setCommentInput] = useState('');
   const [commentSubmitting, setCommentSubmitting] = useState(false);
@@ -29,46 +28,45 @@ export default function InquiryDetail() {
     AsyncStorage.getItem('token').then(token => setAuthToken(token));
     AsyncStorage.getItem('userEmail').then(email => setUserId(email || ''));
     AsyncStorage.getItem('role').then(r => setRole(r || ''));
-    }, []);
+  }, []);
 
   const isAdmin = role && role.toLowerCase() === 'admin';
   const isMyPost = inquiry && userId === inquiry.author;
   const canComment = isAdmin || (role && role.toLowerCase() === 'user' && isMyPost);
 
-  //댓글작성
+  const closeOptionsModal = () => setOptionsVisible(false);
+  const closeDeleteModal = () => setDeleteModalVisible(false);
+
   const handleAddComment = async () => {
     if (!authToken) {
-        Alert.alert('로그인 필요', '로그인 후 이용 바랍니다.');
-        return;
+      Alert.alert('로그인 필요', '로그인 후 이용 바랍니다.');
+      return;
     }
     if (!commentInput.trim()) return;
     setCommentSubmitting(true);
 
-    //관리자면 userId를 'admin'으로 설정, 아니면 본인 이메일 유지
     const userIdToSend = isAdmin ? 'admin' : userId;
 
     try {
-        const res = await axios.post(
+      const res = await axios.post(
         `/api/inquiry/${id}/comments`,
         { userId: userIdToSend, content: commentInput },
         { headers: { Authorization: `Bearer ${authToken}` } }
-        );
-        setInquiry({
+      );
+      setInquiry({
         ...inquiry,
         comments: [
-            ...(inquiry.comments || []),
-            { userId: res.data.userId, content: res.data.content, date: res.data.date }
+          ...(inquiry.comments || []),
+          { userId: res.data.userId, content: res.data.content, date: res.data.date }
         ]
-        });
-        setCommentInput('');
+      });
+      setCommentInput('');
     } catch (e) {
-        console.log(userId)
-        Alert.alert('오류', e.response?.data?.message || '댓글 등록 실패');
+      Alert.alert('오류', e.response?.data?.message || '댓글 등록 실패');
     }
     setCommentSubmitting(false);
-    };
+  };
 
-  //열람 기능
   const handleSubmit = () => {
     if (!password) {
       Alert.alert('오류', '비밀번호를 입력하세요.');
@@ -83,59 +81,57 @@ export default function InquiryDetail() {
       headers: { Authorization: `Bearer ${authToken}` }
     })
       .then(res => {
-        if (!isAdmin &&res.data.author !== userId) {
-        // console.log(res.data)
-        // console.log(userId)
-        Alert.alert('권한 오류', '본인의 글만 열람할 수 있습니다.');
-        setInquiry(null);
-      } else {
-        setInquiry(res.data);
-        // console.log(res.data)
-      }
-      })
-      .catch(error => {
-        console.log('에러:', error);
-        if (error.response) {
-          console.log('에러 응답 데이터:', error.response.data);
+        if (!isAdmin && res.data.author !== userId) {
+          Alert.alert('권한 오류', '본인의 글만 열람할 수 있습니다.');
+          setInquiry(null);
+        } else {
+          setInquiry(res.data);
         }
+      })
+      .catch(() => {
         Alert.alert('오류', '조회 실패 (비밀번호 오류/기타)');
       })
       .finally(() => setLoading(false));
   };
 
-  //삭제 시 비밀번호 요구
   const requestDelete = () => {
     if (!deletePassword) {
-        Alert.alert('오류', '삭제할 때 사용할 비밀번호를 입력하세요.');
-        return;
+      Alert.alert('오류', '삭제할 때 사용할 비밀번호를 입력하세요.');
+      return;
     }
 
     if (!inquiry) {
-        Alert.alert('오류', '삭제 대상 글 정보가 없습니다.');
-        return;
+      Alert.alert('오류', '삭제 대상 글 정보가 없습니다.');
+      return;
     }
-    
-    if (userId !== inquiry.author) {
-        Alert.alert('권한 오류', '본인 글이 아니므로 삭제할 수 없습니다.');
-        return;
-    }
-    
-    handleDelete(deletePassword);
-    };
 
-  //삭제 기능
+    if (userId !== inquiry.author) {
+      Alert.alert('권한 오류', '본인 글이 아니므로 삭제할 수 없습니다.');
+      return;
+    }
+
+    handleDelete(deletePassword);
+  };
+
   const handleDelete = async (passwordToDelete) => {
+    setDeleteLoading(true);
     try {
       await axios.delete(`/api/inquiry/${id}`, {
-    headers: {
-        Authorization: `Bearer ${authToken}`,
-        'Content-Type': 'application/json',
-    },
-        data :{ password: passwordToDelete },
-    });
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          'Content-Type': 'application/json',
+        },
+        data: { password: passwordToDelete },
+      });
 
       Alert.alert('삭제 완료', '건의사항이 삭제되었습니다.', [
-        { text: '확인', onPress: () => router.replace('/inquirylist') }
+        {
+          text: '확인', onPress: () => {
+            closeDeleteModal();
+            closeOptionsModal();
+            setTimeout(() => router.replace('/inquirylist'), 300);
+          }
+        }
       ]);
     } catch (e) {
       if (e.response) {
@@ -144,11 +140,9 @@ export default function InquiryDetail() {
         Alert.alert('오류', '네트워크 오류');
       }
     }
-    setDeleteModalVisible(false);
-    setOptionsVisible(false);
+    setDeleteLoading(false);
   };
 
-  //열람 전 비밀번호 확인하는 창
   if (!inquiry) {
     return (
       <View style={styles.container}>
@@ -163,7 +157,7 @@ export default function InquiryDetail() {
         />
         {authToken && (
           <Button
-            title="열람하기"
+            title={loading ? '열람중...' : '열람하기'}
             onPress={handleSubmit}
             disabled={loading}
           />
@@ -181,7 +175,7 @@ export default function InquiryDetail() {
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: "#fff" }}
-      contentContainerStyle={{ paddingBottom: 90 }}
+      contentContainerStyle={{ paddingBottom: 60 }}
     >
       <View style={styles.container}>
         <View style={styles.contentBox}>
@@ -193,9 +187,7 @@ export default function InquiryDetail() {
           <Text style={styles.title}>{inquiry.title}</Text>
           <Text style={styles.content}>{inquiry.content}</Text>
 
-          {/* 댓글 리스트+입력란 sectionBox */}
           <View style={styles.sectionBox}>
-            {/* 댓글 리스트 */}
             {inquiry.comments?.length > 0 && (
               <View style={styles.commentsSection}>
                 <Text style={styles.commentsTitle}>댓글</Text>
@@ -212,80 +204,84 @@ export default function InquiryDetail() {
             )}
           </View>
 
-
-      {/* 옵션 메뉴 모달 */}
-      <Modal
-        visible={optionsVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setOptionsVisible(false)}
-      >
-        <TouchableOpacity
-          style={styles.modalBackdrop}
-          activeOpacity={1}
-          onPressOut={() => setOptionsVisible(false)}
-        >
-          <View style={styles.optionsModal}>
-            <TouchableOpacity style={styles.optionItem} onPress={() => {
-              setOptionsVisible(false);
-              setDeleteModalVisible(true);
-            }}>
-              <MaterialIcons name="delete" size={21} color="#b44" />
-              <Text style={styles.optionText}>삭제</Text>
+          {/* 옵션 메뉴 모달 */}
+          <Modal
+            visible={optionsVisible}
+            transparent
+            animationType="fade"
+            onRequestClose={closeOptionsModal}
+          >
+            <TouchableOpacity
+              style={styles.modalBackdrop}
+              activeOpacity={1}
+              onPress={() => setOptionsVisible(false)}
+            >
+              <View style={styles.optionsModal}>
+                <TouchableOpacity style={styles.optionItem} onPress={() => {
+                  closeOptionsModal();
+                  setDeleteModalVisible(true);
+                }}>
+                  <MaterialIcons name="delete" size={21} color="#b44" />
+                  <Text style={styles.optionText}>삭제</Text>
+                </TouchableOpacity>
+              </View>
             </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </Modal>
+          </Modal>
 
-      {/* 삭제 비밀번호 입력 모달 */}
-      <Modal
-        visible={deleteModalVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setDeleteModalVisible(false)}
-      >
-        <View style={styles.modalBackdrop}>
-          <View style={styles.deleteModal}>
-            <Text style={{ fontWeight: 'bold', marginBottom: 12 }}>비밀번호 입력</Text>
-            <TextInput
-              placeholder="비밀번호"
-              secureTextEntry
-              value={deletePassword}
-              onChangeText={setDeletePassword}
-              style={styles.input}
-            />
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-              <TouchableOpacity onPress={() => setDeleteModalVisible(false)} style={styles.modalButton}>
-                <Text>취소</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={requestDelete} style={[styles.modalButton, { marginLeft: 16 }]}>
-                <Text style={{ color: 'red' }}>삭제</Text>
+          {/* 삭제 비밀번호 입력 모달 */}
+          <Modal
+            visible={deleteModalVisible}
+            transparent
+            animationType="fade"
+            onRequestClose={closeDeleteModal}
+          >
+            <View style={styles.modalBackdrop}>
+              <View style={styles.deleteModal}>
+                <Text style={{ fontWeight: 'bold', marginBottom: 12 }}>비밀번호 입력</Text>
+                <TextInput
+                  placeholder="비밀번호"
+                  secureTextEntry
+                  value={deletePassword}
+                  onChangeText={setDeletePassword}
+                  style={styles.input}
+                  editable={!deleteLoading}
+                />
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                  <TouchableOpacity onPress={closeDeleteModal} style={styles.modalButton} disabled={deleteLoading}>
+                    <Text>취소</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={requestDelete} style={[styles.modalButton, { marginLeft: 16 }]} disabled={deleteLoading}>
+                    {deleteLoading ? (
+                      <ActivityIndicator color="red" />
+                    ) : (
+                      <Text style={{ color: 'red' }}>삭제</Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
+
+          {canComment && (
+            <View style={styles.commentForm}>
+              <TextInput
+                style={styles.commentInput}
+                placeholder="댓글 입력"
+                value={commentInput}
+                onChangeText={setCommentInput}
+                editable={!commentSubmitting}
+              />
+              <TouchableOpacity
+                style={styles.commentButton}
+                onPress={handleAddComment}
+                disabled={commentSubmitting || !commentInput.trim()}
+              >
+                <Text style={{ color: "#fff", fontWeight: "bold" }}>댓글 등록</Text>
               </TouchableOpacity>
             </View>
-          </View>
-        </View>
-      </Modal>
+          )}
 
-        {canComment && (
-          <View style={styles.commentForm}>
-            <TextInput
-              style={styles.commentInput}
-              placeholder="댓글 입력"
-              value={commentInput}
-              onChangeText={setCommentInput}
-              editable={!commentSubmitting}
-            />
-            <TouchableOpacity
-              style={styles.commentButton}
-              onPress={handleAddComment}
-              disabled={commentSubmitting || !commentInput.trim()}
-            >
-              <Text style={{ color: "#fff", fontWeight: "bold" }}>댓글 등록</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-
-      <Button title="뒤로가기" onPress={() => router.replace('/(tabs)/(Community)/community')} />
+          <Button title="뒤로가기" onPress={() => router.replace('/(tabs)/(Community)/community')} />
         </View>
       </View>
     </ScrollView>
@@ -299,6 +295,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     paddingTop: 20,
+    marginBottom: 40
   },
 
   contentBox: {
@@ -320,7 +317,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     color: "#000",
-    marginLeft: 4,
   },
 
   content: {
@@ -372,7 +368,7 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 2,
   },
-  
+
   commentForm: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -399,5 +395,46 @@ const styles = StyleSheet.create({
 
   loginText: {
     color: 'red'
-  }
+  },
+
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  optionsModal: {
+    backgroundColor: '#f2f2f2',
+    borderRadius: 10,
+    paddingVertical: 8,
+    minWidth: 110,
+    marginTop: 30,
+    marginRight: 24,
+  },
+
+  optionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+  },
+
+  optionText: {
+    fontSize: 15,
+    marginLeft: 10,
+    color: '#222',
+  },
+
+  deleteModal: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 10,
+    width: 300,
+  },
+
+  modalButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
 });
