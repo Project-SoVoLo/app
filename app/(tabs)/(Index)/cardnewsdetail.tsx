@@ -28,9 +28,9 @@ export default function CardNewsDetail() {
 
     axios.get(`/api/card/${cardId}`)
       .then(res => {
-        setCard(res.data.card);
-        setBookmarked(Boolean(res.data.bookmarkedByMe));
-        // console.log(res.data)
+        setCard(res.data);
+        setBookmarked(Boolean(res.data.bookmarked));
+        // console.log(res.data);
       })
       .catch(error => {
         Alert.alert('오류', '카드뉴스 상세 정보를 불러오지 못했습니다.');
@@ -49,12 +49,13 @@ export default function CardNewsDetail() {
       const res = await axios.post(`/api/card/${cardId}/bookmark`, {}, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
-      setBookmarked(prev => !prev);
+      if (res.data !== undefined) {
+        setBookmarked(Boolean(res.data.bookmarked));
+      }
     } catch (e) {
       Alert.alert('오류', e.response?.data?.message || '북마크 처리 실패');
     }
   };
-
 
   const isAdmin = (role ?? '').toLowerCase() === 'admin';
   
@@ -91,10 +92,10 @@ export default function CardNewsDetail() {
   }
 
   return (
-      <ScrollView
-        style={{ flex: 1, backgroundColor: "#fff" }}
-        contentContainerStyle={{ paddingBottom: 60 }}
-        >
+    <ScrollView
+      style={{ flex: 1, backgroundColor: "#fff" }}
+      contentContainerStyle={{ paddingBottom: 60 }}
+    >
       <View style={styles.container}>
 
         {/* 삭제 버튼(관리자일 경우만 표시) */}
@@ -163,45 +164,38 @@ export default function CardNewsDetail() {
 }
 
 const styles = StyleSheet.create({
-
   container: { 
     flex: 1, 
     padding: 16, 
     backgroundColor: '#fff' 
   },
-
   title: { 
     fontSize: 22, 
     fontWeight: 'bold', 
     marginBottom: 12 
   },
-  
   date: { 
     fontSize: 14, 
     color: '#666', 
     marginBottom: 12 
   },
-
   content: { 
     fontSize: 16, 
     lineHeight: 22, 
     marginBottom: 6 
   },
-
   image: { 
     width: '100%', 
     height: 160, 
     borderRadius: 7, 
     marginBottom: 12 
   },
-
   modalBackdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.3)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   optionsModal: {
     backgroundColor: '#f2f2f2',
     borderRadius: 10,
@@ -210,18 +204,15 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginRight: 24,
   },
-
   optionItem: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 18,
   },
-
   optionText: {
     fontSize: 15,
     marginLeft: 10,
     color: '#222',
   }
-
 });

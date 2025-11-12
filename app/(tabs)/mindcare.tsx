@@ -34,6 +34,7 @@ const fetchCenters = async (latitude, longitude) => {
     // console.log('요청 API:', url); //경로 확인용
     const res = await axios.get(url);
     setCenters(Array.isArray(res.data) ? res.data : []);
+    // console.log(res.data);
   } catch (error) {
     Alert.alert('오류', '센터 정보를 불러올 수 없습니다.');
     setCenters([]);
@@ -122,26 +123,27 @@ const styles = StyleSheet.create({
     color: '#555' 
   },
   
-    noResult: { 
+  noResult: { 
     fontSize: 15, 
     marginVertical: 10, 
     color: '#777' 
   },
   
-    centerItem: { 
+  centerItem: { 
     backgroundColor: '#f4f6fb', 
     borderRadius: 11, 
     marginBottom: 16, 
     padding: 13 
   },
   
-    centerName: { 
+  centerName: { 
     fontSize: 17, 
     fontWeight: 'bold', 
     color: '#1544ad', 
-    marginBottom: 5 },
+    marginBottom: 5 
+  },
   
-    centerInfo: { 
+  centerInfo: { 
     fontSize: 14, 
     color: '#444', 
     marginBottom: 2 
@@ -166,7 +168,7 @@ const styles = StyleSheet.create({
   map: {
     width: '100%',
     height: 200,
-    marginBottom: 10,
+    marginBottom: 16,
     borderRadius: 10,
   }
 

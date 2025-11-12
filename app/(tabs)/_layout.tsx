@@ -30,7 +30,7 @@ export default function TabsLayout() {
         tabBarIcon: ({ color, size }) => {
           let iconName: IconName;
 
-          if (route.name === "index") iconName = "home";
+          if (route.name === "(Index)") iconName = "home";
           else if (route.name === "chatbot") iconName = "chatbubble-ellipses";
           else if (route.name === "diagnosis") iconName = "document-text";
           else if (route.name === "mindcare") iconName = "medkit";

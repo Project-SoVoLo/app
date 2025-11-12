@@ -82,6 +82,9 @@ export default function InquiryDetail() {
     })
       .then(res => {
         if (!isAdmin && res.data.author !== userId) {
+          console.log(userId)
+          console.log(res.data)
+          console.log(res.data.author)
           Alert.alert('권한 오류', '본인의 글만 열람할 수 있습니다.');
           setInquiry(null);
         } else {

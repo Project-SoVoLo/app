@@ -14,6 +14,7 @@ export default function InquiryList() {
       .then(res => {
         const reversed = (res.data ?? []).slice().reverse();
         setNotices(reversed);
+        // console.log(res.data)
       })
       .catch(() => {
         Alert.alert('오류', '건의사항 목록을 불러오지 못했습니다.');

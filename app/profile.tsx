@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, DeviceEventEmitter, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useUserStore } from './store/userStore';
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -23,18 +24,22 @@ export default function ProfileScreen() {
   }, []);
 
   //로그아웃
-  const handleLogout = async () => {
-    await AsyncStorage.removeItem('token');
-    await AsyncStorage.removeItem('userEmail');
-    await AsyncStorage.removeItem('role');
-    await AsyncStorage.removeItem('nickname');
-    
-    
-    Alert.alert("로그아웃", "성공적으로 로그아웃되었습니다.");
-    DeviceEventEmitter.emit('loginStateChange');
+const handleLogout = async () => {
+  await AsyncStorage.removeItem('token');
+  await AsyncStorage.removeItem('userEmail');
+  await AsyncStorage.removeItem('role');
+  await AsyncStorage.removeItem('nickname');
+  await AsyncStorage.removeItem('processedAuthCodes'); //인가 코드 기록도 삭제
+  useUserStore.getState().clearRole();
 
-    router.replace('/'); 
-  };
+  DeviceEventEmitter.emit('logoutEvent');
+
+  Alert.alert('로그아웃', '성공적으로 로그아웃되었습니다.');
+  DeviceEventEmitter.emit('loginStateChange');
+
+  router.replace('/');
+};
+
 
   
   // AsyncStorage 확인

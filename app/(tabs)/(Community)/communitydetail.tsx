@@ -63,7 +63,7 @@ export default function CommunityDetail() {
     setLoading(true);
     axios.get(`/api/community-posts/${id}`)
       .then(res =>{
-        // console.log(res.data);
+        console.log(res.data);
         setPost(res.data)})
       .catch(() =>
         Alert.alert('오류', '커뮤니티 게시글 상세를 불러오지 못했습니다.'))
@@ -80,7 +80,7 @@ export default function CommunityDetail() {
   const handleLike = async () => {
     try {
       const res = await axios.post(
-        `/api/community-posts/${id}/likes`,
+        `/api/community-posts/${id}/like`,
         {},
         { headers: { Authorization: `Bearer ${authToken}` } }
       );
@@ -235,7 +235,7 @@ export default function CommunityDetail() {
   const handleBookmark = async () => {
     try {
       const res = await axios.post(
-        `/api/community-posts/${id}/bookmarks`,
+        `/api/community-posts/${id}/bookmark`,
         {},
         { headers: { Authorization: `Bearer ${authToken}` } }
       );
