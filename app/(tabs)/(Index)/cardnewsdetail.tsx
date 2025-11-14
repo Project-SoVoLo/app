@@ -129,6 +129,7 @@ export default function CardNewsDetail() {
         </Modal>
 
         {/* 북마크 버튼 */}
+        {role !== 'ADMIN' && (
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
           <TouchableOpacity onPress={handleBookmark}>
             <MaterialIcons
@@ -141,6 +142,7 @@ export default function CardNewsDetail() {
             {bookmarked ? '북마크됨' : '북마크'}
           </Text>
         </View>
+        )}
 
         <Text style={styles.title}>{card.title}</Text>
         <Text style={styles.date}>{card.date?.slice(0, 10) ?? '-'}</Text>

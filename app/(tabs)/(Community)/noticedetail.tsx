@@ -167,16 +167,18 @@ useEffect(() => {
         </View>
       )}
       {/* 좋아요 버튼 */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-        <TouchableOpacity onPress={handleLike}>
-          <MaterialIcons
-            name={liked ? 'favorite' : 'favorite-border'}
-            size={28}
-            color={liked ? '#e0245e' : '#888'} 동기화 수정필요
-          />
-        </TouchableOpacity>
-        <Text style={{ marginLeft: 6, fontSize: 16 }}>{likeCount}</Text>
-      </View>
+      {role !== 'ADMIN' && (
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+          <TouchableOpacity onPress={handleLike}>
+            <MaterialIcons
+              name={liked ? 'favorite' : 'favorite-border'}
+              size={28}
+              color={liked ? '#e0245e' : '#888'} 동기화 수정필요
+            />
+          </TouchableOpacity>
+          <Text style={{ marginLeft: 6, fontSize: 16 }}>{likeCount}</Text>
+        </View>
+    )}
 
       <Text style={styles.title}>{notice.title}</Text>
       <Text style={styles.date}>{notice.date}</Text>

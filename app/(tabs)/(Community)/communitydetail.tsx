@@ -1,5 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Image, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -13,14 +14,18 @@ export default function CommunityDetail() {
   const [loading, setLoading] = useState(true);
   const [authToken, setAuthToken] = useState(null);
   const [userId, setUserId] = useState('');
-  const [nickname,setNickname] = useState('');
+  const [nickname, setNickname] = useState('');
   const [role, setRole] = useState('');
-  
+
   //수정 관련
   const [optionsVisible, setOptionsVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
+
+  // 이미지 관련: 기존 이미지 + 삭제 토글 + 새 이미지 파일
+  const [existingImages, setExistingImages] = useState([]);
+  const [newImages, setNewImages] = useState([]);
 
   const isOwner = post?.nickname === nickname;
 
@@ -51,10 +56,21 @@ export default function CommunityDetail() {
   }, [post]);
 
   useEffect(() => {
-    AsyncStorage.getItem('token').then(token => setAuthToken(token));
-    AsyncStorage.getItem('userEmail').then(email => setUserId(email || ''));
-    AsyncStorage.getItem('role').then(r => setRole(r || ''));
-    AsyncStorage.getItem('nickname').then(nickname => setNickname(nickname || ''))
+    Promise.all([
+      AsyncStorage.getItem('token'),
+      AsyncStorage.getItem('userEmail'),
+      AsyncStorage.getItem('role'),
+      AsyncStorage.getItem('nickname')
+    ]).then(([token, email, role, nickname]) => {
+      setAuthToken(token);
+      setUserId(email || '');
+      setRole(role || '');
+      if (role === 'ADMIN') {
+        setNickname('관리자');
+      } else {
+        setNickname(nickname || '');
+      }
+    });
   }, []);
 
   //글 상세 조회
@@ -62,18 +78,15 @@ export default function CommunityDetail() {
     if (!id) return;
     setLoading(true);
     axios.get(`/api/community-posts/${id}`)
-      .then(res =>{
-        console.log(res.data);
-        setPost(res.data)})
-      .catch(() =>
-        Alert.alert('오류', '커뮤니티 게시글 상세를 불러오지 못했습니다.'))
+      .then(res => {
+        setPost(res.data);
+        // console.log(res.data);
+      })
+      .catch(() => Alert.alert('오류', '커뮤니티 게시글 상세를 불러오지 못했습니다.'))
       .finally(() => setLoading(false));
     axios.get(`/api/community-posts/${id}/comments`)
-    .then(res => {
-        // console.log(res.data);
-        setComments(res.data)
-    })
-    .catch(() => setComments([]));
+      .then(res => setComments(res.data))
+      .catch(() => setComments([]));
   }, [id, authToken]);
 
   //좋아요 토글
@@ -93,34 +106,87 @@ export default function CommunityDetail() {
     }
   };
 
-  //글 수정 모달
+  //글 수정 모달 열기
   const openEditModal = () => {
     setEditTitle(post?.title ?? '');
     const textBlocks = post?.blocks?.filter(b => b.type === 'text').map(b => b.content).join('\n') ?? '';
     setEditContent(textBlocks);
+
+    const imgs = post?.blocks
+      ?.filter(b => b.type === 'image' && b.url)
+      .map(b => ({ url: b.url, toDelete: false })) || [];
+    setExistingImages(imgs);
+
+    setNewImages([]);
     setEditModalVisible(true);
     setOptionsVisible(false);
   };
 
-  //글 수정 api
-  const handleEdit = async () => {
-    if (!editTitle.trim() || !editContent.trim()) {
-      Alert.alert('입력 오류', '제목과 내용을 모두 입력하세요.');
-      return;
+  const removeExistingImage = (index) => {
+  setExistingImages(prev => prev.filter((_, i) => i !== index));
+};
+
+  //수정 시에 새 이미지 선택
+  const pickNewImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: true,
+      quality: 0.7,
+    });
+
+    if (!result.canceled) {
+      setNewImages(prev => [...prev, ...result.assets]);
     }
-    try {
-      await axios.put(
-        `/api/community-posts/${id}`,
-        { title: editTitle, blocks: [{ type: 'text', content: editContent }] },
-        { headers: { Authorization: `Bearer ${authToken}` } }
-      );
-      setPost(prev => prev ? ({ ...prev, title: editTitle, blocks: [{ type: 'text', content: editContent }] }) : prev);
-      setEditModalVisible(false);
+  };
+
+  //수정 api
+  const handleEdit = async () => {
+  if (!editTitle.trim() || !editContent.trim()) {
+    Alert.alert('입력 오류', '제목과 내용을 모두 입력하세요.');
+    return;
+  }
+  try {
+    const formData = new FormData();
+    formData.append('title', editTitle);
+
+    // 기존 이미지(삭제되지 않은 것만 blocks에 추가)
+    const retainedImages = existingImages.filter(img => !img.toDelete);
+
+    // "blocks"는 기존 이미지 + 새 이미지 + 텍스트 순서대로
+    const blocks = [
+      ...retainedImages.map(img => ({ type: 'image', url: img.url, alt: '첨부 이미지' })),
+      ...newImages.map(() => ({ type: 'image', url: '', alt: '첨부 이미지' })), // 새 이미지는 url 빈값
+      { type: 'text', content: editContent }
+    ];
+    formData.append('blocks', JSON.stringify(blocks));
+
+    // 새로 추가하는 이미지 파일
+    newImages.forEach((img, idx) => {
+      const uriParts = img.uri.split('.');
+      const fileType = uriParts[uriParts.length - 1].toLowerCase();
+      formData.append('images', {
+        uri: img.uri,
+        name: `newphoto${idx + 1}.${fileType}`,
+        type: `image/${fileType === 'jpg' ? 'jpeg' : fileType}`,
+      });
+    });
+
+    await axios.put(`/api/community-posts/${id}`, formData, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    const detailRes = await axios.get(`/api/community-posts/${id}`);
+    setPost(detailRes.data);
+    setEditModalVisible(false);
       Alert.alert('수정 완료', '커뮤니티 게시글이 수정되었습니다.');
     } catch (e) {
       Alert.alert('오류', e.response?.data?.message || '수정 실패');
     }
   };
+
 
   //글 삭제 api
   const handleDelete = async () => {
@@ -164,25 +230,25 @@ export default function CommunityDetail() {
 
   //댓글 수정
   const handleEditComment = async () => {
-  if (!editCommentContent.trim()) {
-    Alert.alert('입력 오류', '댓글 내용을 입력하세요.');
-    return;
-  }
-  try {
-    await axios.put(
-      `/api/community-posts/${id}/comments/${editCommentId}`,
-      { content: editCommentContent },
-      { headers: { Authorization: `Bearer ${authToken}` } }
-    );
-    //성공 시 최신 목록 재조회
-    const res = await axios.get(`/api/community-posts/${id}/comments`);
-    setComments(res.data);
-    setEditCommentModalVisible(false);
-    setEditCommentContent('');
-  } catch (e) {
-    Alert.alert('오류', e.response?.data?.message || '댓글 수정 실패');
-  }
-};
+    if (!editCommentContent.trim()) {
+      Alert.alert('입력 오류', '댓글 내용을 입력하세요.');
+      return;
+    }
+    try {
+      await axios.put(
+        `/api/community-posts/${id}/comments/${editCommentId}`,
+        { content: editCommentContent },
+        { headers: { Authorization: `Bearer ${authToken}` } }
+      );
+      //성공 시 최신 목록 재조회
+      const res = await axios.get(`/api/community-posts/${id}/comments`);
+      setComments(res.data);
+      setEditCommentModalVisible(false);
+      setEditCommentContent('');
+    } catch (e) {
+      Alert.alert('오류', e.response?.data?.message || '댓글 수정 실패');
+    }
+  };
 
   //댓글 수정 모달
   const openEditCommentModal = (comment) => {
@@ -222,14 +288,13 @@ export default function CommunityDetail() {
     ]);
   };
 
-
   //북마크 개수 및 본인 북마크 확인
   useEffect(() => {
-  if (post) {
-    setBookmarked(Boolean(post.bookmarkedByMe));
-    setBookmarkCount(post.bookmarkCount || 0);
-  }
-}, [post]);
+    if (post) {
+      setBookmarked(Boolean(post.bookmarkedByMe));
+      setBookmarkCount(post.bookmarkCount || 0);
+    }
+  }, [post]);
 
   //북마크 api
   const handleBookmark = async () => {
@@ -247,7 +312,6 @@ export default function CommunityDetail() {
       Alert.alert('오류', e.response?.data?.message || '북마크 처리 실패');
     }
   };
-
 
   if (loading) {
     return (
@@ -270,250 +334,254 @@ export default function CommunityDetail() {
     <ScrollView
       style={{ flex: 1, backgroundColor: "#fff" }}
       contentContainerStyle={{ paddingBottom: 60 }}
-      >
-    <View style={styles.container}>
-      {isOwner && (
-      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 8 }}>
-        <TouchableOpacity onPress={() => setOptionsVisible(true)}>
-          <MaterialIcons name="more-vert" size={26} color="#444" />
-        </TouchableOpacity>
-      </View>
-    )}
-      {/* 좋아요,북마크 버튼 */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-        <TouchableOpacity onPress={handleLike}>
-          <MaterialIcons
-            name={liked ? 'favorite' : 'favorite-border'}
-            size={28}
-            color={liked ? '#e0245e' : '#888'}
-          />
-        </TouchableOpacity>
-        <Text style={{ marginLeft: 6, fontSize: 16 }}>{likeCount}</Text>
+    >
+      <View style={styles.container}>
+        {isOwner && (
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 8 }}>
+            <TouchableOpacity onPress={() => setOptionsVisible(true)}>
+              <MaterialIcons name="more-vert" size={26} color="#444" />
+            </TouchableOpacity>
+          </View>
+        )}
+        {role !== 'ADMIN' && (
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+            {/* 좋아요 버튼 */}
+            <TouchableOpacity onPress={handleLike}>
+              <MaterialIcons
+                name={liked ? 'favorite' : 'favorite-border'}
+                size={28}
+                color={liked ? '#e0245e' : '#888'}
+              />
+            </TouchableOpacity>
+            <Text style={{ marginLeft: 6, fontSize: 16 }}>{likeCount}</Text>
+            {/* 북마크 버튼 */}
+            <TouchableOpacity onPress={handleBookmark} style={{ marginLeft: 18 }}>
+              <MaterialIcons
+                name={bookmarked ? 'bookmark' : 'bookmark-outline'}
+                size={26}
+                color={bookmarked ? '#ffbb33' : '#888'}
+              />
+            </TouchableOpacity>
+            <Text style={{ marginLeft: 5, fontSize: 16 }}>{bookmarkCount}</Text>
+          </View>
+        )}
 
-        <TouchableOpacity onPress={handleBookmark} style={{ marginLeft: 18 }}>
-          <MaterialIcons
-            name={bookmarked ? 'bookmark' : 'bookmark-outline'}
-            size={26}
-            color={bookmarked ? '#ffbb33' : '#888'}
-          />
-        </TouchableOpacity>
-        <Text style={{ marginLeft: 5, fontSize: 16 }}>{bookmarkCount}</Text>
-      </View>
 
-      <Text style={styles.title}>{post.title}</Text>
-      <Text style={styles.date}>작성자: {post.nickname ?? '익명'} / {post.createdAt?.slice(0,10) ?? post.updatedAt?.slice(0,10) ?? '-'}</Text>
-      {post.blocks && post.blocks.map((block, idx) => (
-        block.type === 'text'
-          ? <Text key={idx} style={styles.content}>{block.content}</Text>
-          : block.type === 'image' && block.url
-            ? <Image key={idx} source={{ uri: block.url }} style={styles.image} />
-            : null
-      ))}
+        <Text style={styles.title}>{post.title}</Text>
+        <Text style={styles.date}>작성자: {post.nickname ?? '익명'} / {post.createdAt?.slice(0,10) ?? post.updatedAt?.slice(0,10) ?? '-'}</Text>
+        {post.blocks && post.blocks.map((block, idx) => (
+          block.type === 'text'
+            ? <Text key={idx} style={styles.content}>{block.content}</Text>
+            : block.type === 'image' && block.url
+              ? <Image key={idx} source={{ uri: block.url }} style={styles.image} />
+              : null
+        ))}
 
-      {/* 댓글 표시 */}
-      {comments?.length > 0 && (
-        <View style={styles.commentsSection}>
-          <Text style={styles.commentsTitle}>댓글</Text>
-          {comments.map((comment, idx) => (
-            <View key={idx} style={[
-              styles.commentItem,
-              { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }
-            ]}>
-              <View>
-                <Text>{comment.nickname}: {comment.content}</Text>
-                <Text style={styles.commentDate}>{comment.date}</Text>
-              </View>
-              {/* 본인 댓글만 아이콘 2개 노출 */}
-              {(comment.nickname === nickname) && (
-                <View style={{ flexDirection: 'row' }}>
-                  <TouchableOpacity
-                    onPress={() => openEditCommentModal(comment)}
-                    style={{ marginHorizontal: 6 }}>
-                    <MaterialIcons name="edit" size={20} color="#007bff" />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => handleDeleteComment(comment.commentId)}
-                    style={{ marginHorizontal: 6 }}>
-                    <MaterialIcons name="delete" size={20} color="#b44" />
-                  </TouchableOpacity>
+        {/* 댓글 표시 */}
+        {comments?.length > 0 && (
+          <View style={styles.commentsSection}>
+            <Text style={styles.commentsTitle}>댓글</Text>
+            {comments.map((comment, idx) => (
+              <View key={idx} style={[
+                styles.commentItem,
+                { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }
+              ]}>
+                <View>
+                  <Text>{comment.nickname}: {comment.content}</Text>
+                  <Text style={styles.commentDate}>{comment.date}</Text>
                 </View>
-              )}
-            </View>
-          ))}
-        </View>
-      )}
-
-      {/* 댓글 수정 모달 */}
-      <Modal
-        visible={editCommentModalVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setEditCommentModalVisible(false)}
-      >
-        <View style={styles.modalBackdrop}>
-          <View style={styles.editModal}>
-            <Text style={{ fontWeight: 'bold', marginBottom: 12 }}>댓글 수정</Text>
-            <TextInput
-              placeholder="댓글 내용"
-              value={editCommentContent}
-              onChangeText={setEditCommentContent}
-              style={[styles.input, { height: 60, textAlignVertical: 'top' }]}
-              multiline
-            />
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-              <TouchableOpacity onPress={() => setEditCommentModalVisible(false)} style={styles.modalButton}>
-                <Text>취소</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleEditComment} style={[styles.modalButton, { marginLeft: 16 }]}>
-                <Text style={{ color: '#007bff' }}>수정</Text>
-              </TouchableOpacity>
-            </View>
+                {(comment.nickname === nickname) && (
+                  <View style={{ flexDirection: 'row' }}>
+                    <TouchableOpacity
+                      onPress={() => openEditCommentModal(comment)}
+                      style={{ marginHorizontal: 6 }}>
+                      <MaterialIcons name="edit" size={20} color="#007bff" />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => handleDeleteComment(comment.commentId)}
+                      style={{ marginHorizontal: 6 }}>
+                      <MaterialIcons name="delete" size={20} color="#b44" />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            ))}
           </View>
-        </View>
-      </Modal>
+        )}
 
-
-      {/* 댓글 입력 */}
-        <View style={styles.commentForm}>
-          <TextInput
-            style={styles.input}
-            placeholder="댓글 입력"
-            value={commentInput}
-            onChangeText={setCommentInput}
-            editable={!commentSubmitting}
-          />
-          <Button
-            title="댓글 등록"
-            onPress={handleAddComment}
-            disabled={commentSubmitting || !commentInput.trim()}
-          />
-        </View>
-
-      <Button title="뒤로가기" onPress={() => router.replace('/(tabs)/(Community)/community')} />
-
-      <Modal
-        visible={optionsVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setOptionsVisible(false)}
-      >
-        <TouchableOpacity
-          style={styles.modalBackdrop}
-          activeOpacity={1}
-          onPressOut={() => setOptionsVisible(false)}
+        {/* 댓글 수정 모달 */}
+        <Modal
+          visible={editCommentModalVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setEditCommentModalVisible(false)}
         >
-          <View style={styles.optionsModal}>
-            <TouchableOpacity style={styles.optionItem} onPress={openEditModal}>
-              <MaterialIcons name="edit" size={21} color="#222" />
-              <Text style={styles.optionText}>수정</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.optionItem} onPress={handleDelete}>
-              <MaterialIcons name="delete" size={21} color="#b44" />
-              <Text style={styles.optionText}>삭제</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </Modal>
-
-      <Modal
-        visible={editModalVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setEditModalVisible(false)}
-      >
-        <View style={styles.modalBackdrop}>
-          <View style={styles.editModal}>
-            <Text style={{ fontWeight: 'bold', marginBottom: 12 }}>커뮤니티 글 수정</Text>
-            <TextInput
-              placeholder="제목"
-              value={editTitle}
-              onChangeText={setEditTitle}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="내용"
-              value={editContent}
-              onChangeText={setEditContent}
-              style={[styles.input, { height: 90, textAlignVertical: 'top' }]}
-              multiline
-            />
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-              <TouchableOpacity onPress={() => setEditModalVisible(false)} style={styles.modalButton}>
-                <Text>취소</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleEdit} style={[styles.modalButton, { marginLeft: 16 }]}>
-                <Text style={{ color: '#007bff' }}>수정</Text>
-              </TouchableOpacity>
+          <View style={styles.modalBackdrop}>
+            <View style={styles.editModal}>
+              <Text style={{ fontWeight: 'bold', marginBottom: 12 }}>댓글 수정</Text>
+              <TextInput
+                placeholder="댓글 내용"
+                value={editCommentContent}
+                onChangeText={setEditCommentContent}
+                style={[styles.input, { height: 60, textAlignVertical: 'top' }]}
+                multiline
+              />
+              <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                <TouchableOpacity onPress={() => setEditCommentModalVisible(false)} style={styles.modalButton}>
+                  <Text>취소</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleEditComment} style={[styles.modalButton, { marginLeft: 16 }]}>
+                  <Text style={{ color: '#007bff' }}>수정</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
-    </View>
+        </Modal>
+
+        {/* 댓글 입력 */}
+        {role !== 'ADMIN' && (
+          <View style={styles.commentForm}>
+            <TextInput
+              style={styles.input}
+              placeholder="댓글 입력"
+              value={commentInput}
+              onChangeText={setCommentInput}
+              editable={!commentSubmitting}
+            />
+            <Button
+              title="댓글 등록"
+              onPress={handleAddComment}
+              disabled={commentSubmitting || !commentInput.trim()}
+            />
+          </View>
+        )}
+
+
+        <Button title="뒤로가기" onPress={() => router.replace('/(tabs)/(Community)/community')} />
+
+        <Modal
+          visible={optionsVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setOptionsVisible(false)}
+        >
+          <TouchableOpacity
+            style={styles.modalBackdrop}
+            activeOpacity={1}
+            onPressOut={() => setOptionsVisible(false)}
+          >
+            <View style={styles.optionsModal}>
+              <TouchableOpacity style={styles.optionItem} onPress={openEditModal}>
+                <MaterialIcons name="edit" size={21} color="#222" />
+                <Text style={styles.optionText}>수정</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.optionItem} onPress={handleDelete}>
+                <MaterialIcons name="delete" size={21} color="#b44" />
+                <Text style={styles.optionText}>삭제</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Modal>
+
+        {/* 게시글 수정 모달 */}
+        <Modal
+          visible={editModalVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setEditModalVisible(false)}
+        >
+          <View style={styles.modalBackdrop}>
+            <View style={styles.editModal}>
+              <Text style={{ fontWeight: 'bold', marginBottom: 12 }}>커뮤니티 글 수정</Text>
+
+              <TextInput
+                placeholder="제목"
+                value={editTitle}
+                onChangeText={setEditTitle}
+                style={styles.input}
+              />
+
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 10 }}>
+                {/* 기존 이미지 */}
+                {existingImages.map((img, idx) => (
+                  <TouchableOpacity
+                    key={'exist_' + idx}
+                    onPress={() => removeExistingImage(idx)}
+                    style={{
+                      marginRight: 8,
+                      marginBottom: 8,
+                    }}>
+                    <Image source={{ uri: img.url }} style={{ width: 70, height: 70, borderRadius: 5 }} />
+                  </TouchableOpacity>
+                ))}
+                {/* 새로 추가된 이미지  */}
+                {newImages.map((img, idx) => (
+                  <View
+                    key={'new_' + idx}
+                    style={{
+                      marginRight: 8,
+                      marginBottom: 8,
+                      position: 'relative',
+                    }}>
+                    <Image source={{ uri: img.uri }} style={{ width: 70, height: 70, borderRadius: 5 }} />
+                    <TouchableOpacity
+                      onPress={() => setNewImages(prev => prev.filter((_, i) => i !== idx))}
+                      style={{
+                        position: 'absolute', top: -5, right: -5, backgroundColor: '#fff', borderRadius: 11,
+                      }}>
+                      <MaterialIcons name="cancel" size={18} color="#b44" />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+                {/* 새 이미지 추가 버튼 */}
+                <TouchableOpacity
+                  onPress={pickNewImage}
+                  style={{
+                    width: 70, height: 70, justifyContent: 'center', alignItems: 'center',
+                    backgroundColor: '#eee', borderRadius: 5,
+                  }}>
+                  <MaterialIcons name="add-a-photo" size={24} color="#666" />
+                </TouchableOpacity>
+              </View>
+
+
+              <TextInput
+                placeholder="내용"
+                value={editContent}
+                onChangeText={setEditContent}
+                style={[styles.input, { height: 90, textAlignVertical: 'top' }]}
+                multiline
+              />
+
+              <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                <TouchableOpacity onPress={() => setEditModalVisible(false)} style={styles.modalButton}>
+                  <Text>취소</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleEdit} style={[styles.modalButton, { marginLeft: 16 }]}>
+                  <Text style={{ color: '#007bff' }}>수정</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-
-  container: { 
-    flex: 1, 
-    padding: 16, 
-    backgroundColor: '#fff', 
-  },
-
-  title: { 
-    fontSize: 22, 
-    fontWeight: 'bold', 
-    marginBottom: 12 
-  },
-
-  date: { 
-    fontSize: 14, 
-    color: '#666', 
-    marginBottom: 12 
-  },
-  
-  content: { 
-    fontSize: 16, 
-    lineHeight: 22, 
-    marginBottom: 6 
-  },
-
-  image: { 
-    width: '100%', 
-    height: 160, 
-    borderRadius: 7, 
-    marginBottom: 12 
-  },
-
-  commentsSection: { 
-    marginTop: 24 
-  },
-
-  commentsTitle: { 
-    fontWeight: '600', 
-    marginBottom: 8 
-  },
-
-  commentItem: { 
-    marginBottom: 8 
-  },
-
-  commentDate: { 
-    fontSize: 12, 
-    color: '#666' 
-  },
-
-  commentForm: { 
-    marginTop: 20 
-  },
-
-  input: { 
-    borderColor: '#ccc', 
-    borderWidth: 1, 
-    borderRadius: 6, 
-    padding: 10, 
-    marginVertical: 16 
+  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 12 },
+  date: { fontSize: 14, color: '#666', marginBottom: 12 },
+  content: { fontSize: 16, lineHeight: 22, marginBottom: 6 },
+  image: { width: '100%', height: 160, borderRadius: 7, marginBottom: 12 },
+  commentsSection: { marginTop: 24 },
+  commentsTitle: { fontWeight: '600', marginBottom: 8 },
+  commentItem: { marginBottom: 8 },
+  commentDate: { fontSize: 12, color: '#666' },
+  commentForm: { marginTop: 20 },
+  input: {
+    borderColor: '#ccc', borderWidth: 1, borderRadius: 6, padding: 10, marginVertical: 16
   },
 
   modalBackdrop: {
@@ -556,5 +624,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
-  
+
 });

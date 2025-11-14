@@ -35,6 +35,7 @@ export default function Consulation() {
     })
       .then(res => {
         setData(res.data);
+        console.log(res.data);
       })
       .catch(err => {
         Alert.alert("오류", "내역을 불러오지 못했습니다.");

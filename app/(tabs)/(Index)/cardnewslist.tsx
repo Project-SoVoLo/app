@@ -71,7 +71,7 @@ useEffect(() => {
               onPress={()=> router.push(`/cardnewsdetail?cardId=${item.postId}`)}
               >
                 <Image
-                  source={{ uri: item.imageUrl }}
+                  source={{ uri: item.thumbnailUrl }}
                   style={styles.cardImage}
                   resizeMode="cover"
                 />

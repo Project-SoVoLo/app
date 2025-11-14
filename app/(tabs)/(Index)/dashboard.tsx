@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -16,6 +17,26 @@ export default function Dashboard() {
 
   const currentUsers = users.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
   const totalPages = Math.ceil(users.length / PAGE_SIZE);
+
+  // AsyncStorage 확인용
+  useEffect(() => {
+    const printAllStorage = async () => {
+      try {
+        const keys = await AsyncStorage.getAllKeys();
+        if (keys.length === 0) {
+          console.log('AsyncStorage: 없음');
+          return;
+        }
+        const items = await AsyncStorage.multiGet(keys);
+        items.forEach(([key, value]) => {
+          console.log(`${key}: ${value !== null ? value : 'null'}`);
+        });
+      } catch (e) {
+        console.error('AsyncStorage 오류:', e);
+      }
+    };
+    printAllStorage();
+  }, []);
 
   useEffect(() => {
     let intervalId;

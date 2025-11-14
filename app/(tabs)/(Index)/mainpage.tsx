@@ -86,6 +86,8 @@ export default function MainPage() {
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState('');
   const router = useRouter();
+  const [inquiries, setInquiries] = useState([]);
+  const [userEmail, setUserEmail] = useState(null);
 
   // 포춘쿠키 팝업 상태
   const [fortunePopup, setFortunePopup] = useState(false);
@@ -115,6 +117,8 @@ export default function MainPage() {
     const checkLogin = async () => {
       const token = await AsyncStorage.getItem('token');
       const role = await AsyncStorage.getItem('role');
+      const email = await AsyncStorage.getItem('userEmail');
+      setUserEmail(email);
       setRole(role);
       setIsLoggedIn(!!token);
     };
@@ -131,12 +135,17 @@ export default function MainPage() {
       if (isLoggedIn && role !== 'ADMIN') {
         Promise.all([
           axios.get('/api/mypage/community-posts'),
+          axios.get('/api/inquiry/all'),
           axios.get('/api/mypage/likes'),
           axios.get('/api/mypage/bookmarks'),
           axios.get('/api/card')
         ])
-          .then(([postsRes, likesRes, bookmarksRes, cardRes]) => {
+          .then(([postsRes, inquiryRes, likesRes, bookmarksRes, cardRes]) => {
             setPosts(Array.isArray(postsRes.data) ? postsRes.data : []);
+
+          const filteredInquiries = (Array.isArray(inquiryRes.data) ? inquiryRes.data : [])
+            .filter(item => item.author === userEmail);
+            setInquiries(filteredInquiries);
             //좋아요 목록 최신순 정렬
             const sortedLikes = (Array.isArray(likesRes.data) ? likesRes.data : []).sort((a, b) => {
               const aDate = new Date(a.date || a.createdAt);
@@ -144,6 +153,7 @@ export default function MainPage() {
               return bDate - aDate;
             });
             setLikes(sortedLikes);
+            // console.log('likesRes:', likesRes.data);
             //북마크 목록 최신순 정렬
             const communityBookmarks = (Array.isArray(bookmarksRes.data) ? bookmarksRes.data : [])
               .filter(item => item.blocks && item.blocks !== null)
@@ -162,6 +172,7 @@ export default function MainPage() {
           .catch(() => {
             Alert.alert('오류', '정보를 불러오지 못했습니다.');
             setPosts([]);
+            setInquiries([]);
             setLikes([]);
             setBookmarks([]);
             setCardNews([]);
@@ -217,11 +228,39 @@ export default function MainPage() {
           {/* 내가 작성한 글 */}
           <View style={styles.sectionBox}>
             <Text style={styles.sectionTitle}>내가 작성한 글</Text>
-            {isLoggedIn
-              ? (role === 'ADMIN' ? (
+
+            <TouchableOpacity>
+              <Text style={styles.subSectionTitle}>건의사항</Text>
+            </TouchableOpacity>
+            {isLoggedIn ? (
+              role === 'ADMIN' ? (
                 <Text>관리자는 작성한 글을 볼 수 없습니다.</Text>
-              ) : posts.length > 0
-                ? posts.map((item, idx) => (
+              ) : inquiries.length > 0 ? (
+                inquiries.map((item, idx) => (
+                  <TouchableOpacity
+                    style={styles.postItem}
+                    key={item.id ?? idx}
+                    onPress={() => router.push(`/inquirydetail?id=${item.id}`)}
+                  >
+                    <Text style={styles.postTitle}>{item.title}</Text>
+                    <Text style={styles.postUser}>{item.date || item.createdAt}</Text>
+                  </TouchableOpacity>
+                ))
+              ) : (
+                <Text>작성한 건의사항이 없습니다.</Text>
+              )
+            ) : (
+              <Text>글을 보려면 로그인이 필요합니다.</Text>
+            )}
+
+            <TouchableOpacity>
+              <Text style={styles.subSectionTitle}>커뮤니티</Text>
+            </TouchableOpacity>
+            {isLoggedIn ? (
+              role === 'ADMIN' ? (
+                <Text>관리자는 작성한 글을 볼 수 없습니다.</Text>
+              ) : posts.length > 0 ? (
+                posts.map((item, idx) => (
                   <TouchableOpacity
                     style={styles.postItem}
                     key={item.id ?? idx}
@@ -231,11 +270,14 @@ export default function MainPage() {
                     <Text style={styles.postUser}>{item.date}</Text>
                   </TouchableOpacity>
                 ))
-                : <Text>작성한 글이 없습니다.</Text>
+              ) : (
+                <Text>작성한 글이 없습니다.</Text>
               )
-              : <Text>작성한 글을 보려면 로그인이 필요합니다.</Text>
-            }
+            ) : (
+              <Text>글을 보려면 로그인이 필요합니다.</Text>
+            )}
           </View>
+
           
           {/* 좋아요 목록 */}
           <View style={styles.sectionBox}>

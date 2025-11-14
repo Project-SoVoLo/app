@@ -28,7 +28,7 @@ export default function NoticeList() {
 });
 setNotices(sorted);
       })
-      .catch(() => Alert.alert('오류', '공지사항 목록을 불러오지 못했습니다.'))
+      .catch(() => Alert.alert('오류', '커뮤니티 목록을 불러오지 못했습니다.'))
       .finally(() => setLoading(false));
   }, [])
 );

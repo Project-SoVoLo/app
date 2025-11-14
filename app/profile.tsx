@@ -23,6 +23,11 @@ export default function ProfileScreen() {
     fetchUserEmail();
   }, []);
 
+  useEffect(() => {
+  const logoutListener = DeviceEventEmitter.addListener('logoutEvent', handleLogout);
+  return () => logoutListener.remove();
+}, []);
+
   //로그아웃
 const handleLogout = async () => {
   await AsyncStorage.removeItem('token');
@@ -32,7 +37,7 @@ const handleLogout = async () => {
   await AsyncStorage.removeItem('processedAuthCodes'); //인가 코드 기록도 삭제
   useUserStore.getState().clearRole();
 
-  DeviceEventEmitter.emit('logoutEvent');
+  // DeviceEventEmitter.emit('logoutEvent');
 
   Alert.alert('로그아웃', '성공적으로 로그아웃되었습니다.');
   DeviceEventEmitter.emit('loginStateChange');

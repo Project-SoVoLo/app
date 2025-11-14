@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, Image, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import axios from '../../api/axios';
 
 export default function CommunityWrite() {
@@ -11,14 +11,14 @@ export default function CommunityWrite() {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [authToken, setAuthToken] = useState(null);
-  const [imageAsset, setImageAsset] = useState(null);
+  const [imageAssets, setImageAssets] = useState([]); // 여러 이미지
 
   useEffect(() => {
     AsyncStorage.getItem('token').then(token => setAuthToken(token));
   }, []);
 
   //이미지 선택 및 미리보기
-  const pickImage = async () => {
+  const pickImages = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert('권한 필요', '이미지 접근 권한을 허용해 주세요.');
@@ -28,11 +28,13 @@ export default function CommunityWrite() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 0.8,
+      allowsMultipleSelection: true,
+      selectionLimit: 5, //최대 선택 가능 이미지
       base64: false,
     });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
-      setImageAsset(result.assets[0]);
+      setImageAssets(result.assets);
     }
   };
 
@@ -48,15 +50,36 @@ export default function CommunityWrite() {
     }
 
     try {
+      const formData = new FormData();
+      formData.append('title', title);
+
       const blocks = [
         { type: 'text', content: body },
-        ...(imageAsset ? [{ type: 'image', url: imageAsset.uri, alt: '첨부 이미지' }] : [])
+        ...imageAssets.map(() => ({ type: 'image', url: '', alt: '첨부 이미지' }))
       ];
+      formData.append('blocks', JSON.stringify(blocks));
+
+      //여러 이미지
+      imageAssets.forEach((img, idx) => {
+        const uriParts = img.uri.split('.');
+        const fileType = uriParts[uriParts.length - 1].toLowerCase();
+
+        formData.append('images', {
+          uri: img.uri,
+          name: `photo${idx + 1}.${fileType}`,
+          type: `image/${fileType === 'jpg' ? 'jpeg' : fileType}`,
+        });
+      });
 
       const res = await axios.post(
         '/api/community-posts',
-        { title, blocks },
-        { headers: { Authorization: `Bearer ${authToken}` } }
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            'Content-Type': 'multipart/form-data',
+          }
+        }
       );
 
       Alert.alert('글 등록 완료', '커뮤니티 글이 등록되었습니다.', [
@@ -72,7 +95,7 @@ export default function CommunityWrite() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>커뮤니티 글 작성</Text>
       <TextInput
         style={styles.input}
@@ -92,33 +115,32 @@ export default function CommunityWrite() {
 
       {/* 이미지 업로드/미리보기 */}
       <View style={{ marginBottom: 18, alignItems: 'center' }}>
-        {imageAsset &&
-          <Image source={{ uri: imageAsset.uri }} style={{ width: 160, height: 110, borderRadius: 8, marginBottom: 10 }} />
-        }
-        <Button title="이미지 선택" onPress={pickImage} />
+        <ScrollView horizontal>
+          {imageAssets.map((img, idx) => (
+            <Image key={idx} source={{ uri: img.uri }} style={{ width: 120, height: 90, borderRadius: 8, marginRight: 10 }} />
+          ))}
+        </ScrollView>
+        <Button title="이미지 선택" onPress={pickImages} />
       </View>
 
       <Button title="등록하기" onPress={handleSubmit} disabled={!authToken} />
       <Button title="취소" onPress={() => router.back()} color="#777" />
       {!authToken && <Text style={{ color: 'red', marginTop: 10 }}>로그인 후 작성할 수 있습니다.</Text>}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-
   container: { 
     flex: 1, 
     padding: 16, 
     backgroundColor: '#fff' 
   },
-
   title: { 
     fontSize: 22, 
     fontWeight: 'bold', 
     marginBottom: 20 
   },
-
   input: {
     borderWidth: 1,
     borderColor: '#bbb',
@@ -129,5 +151,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: '#fafafa',
   },
-  
 });
