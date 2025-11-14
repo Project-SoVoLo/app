@@ -273,119 +273,130 @@ const styles = StyleSheet.create({
   container: { 
     flex: 1, 
     backgroundColor: "#fff", 
-    paddingHorizontal: 16, 
-    paddingTop: 20 
+    paddingHorizontal: 20, 
+    paddingTop: 24, 
   },
 
   item: {
-    backgroundColor: "#f2f2f2",
-    height: 44,
-    borderRadius: 10,
+    backgroundColor: "#f4f6fb",
+    height: 50,
+    borderRadius: 14,
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 6,
-    marginBottom: 15,
+    marginVertical: 8,
+    marginBottom: 20,
+    shadowColor: "#a3c4f3",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 5,
   },
 
   itemText: { 
-    fontSize: 18, 
-    color: "#000", 
-    fontWeight: "500" 
+    fontSize: 19, 
+    color: "#2f3542", 
+    fontWeight: "600" 
   },
 
   backButton: { 
-    marginBottom: 16 
+    marginBottom: 20 
   },
 
   backButtonText: { 
-    fontSize: 16, 
-    color: "#000" 
+    fontSize: 17, 
+    color: "#34495e",
+    fontWeight: "600",
   },
 
   title: { 
-    fontSize: 28, 
+    fontSize: 30, 
     fontWeight: "bold", 
-    marginBottom: 30, 
-    color: "#000" 
+    marginBottom: 36, 
+    color: "#2c3e50" 
   },
   
   questionsContainer: { 
-    paddingBottom: 10 
+    paddingBottom: 14,
   },
   
   questionBox: {
-    backgroundColor: "#f2f2f2",
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 14,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 1,
+    backgroundColor: "#f4f6fb",
+    borderRadius: 16,
+    padding: 18,
+    marginBottom: 20,
+    shadowColor: "#a3c4f3",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 7,
+    elevation: 4,
   },
   
   questionText: { 
-    fontSize: 15, 
-    color: "#000", 
-    marginBottom: 12 
+    fontSize: 16, 
+    color: "#232f3e", 
+    marginBottom: 14,
+    fontWeight: "600",
   },
   
   answerRow: { 
     flexDirection: "row", 
     justifyContent: "space-between", 
-    marginTop: 8 
   },
 
   answerButton: {
     flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: 2,
+    marginHorizontal: 5,
     flex: 1,
-    paddingHorizontal: 0,
+    paddingHorizontal: 6,
   },
   
   answerLabel: { 
-    fontSize: 10, 
-    color: "#000", 
+    fontSize: 12, 
+    color: "#34495e", 
     flexShrink: 1 
   },
   
   radioOuter: {
-    width: 12,
-    height: 12,
-    borderRadius: 10,
-    borderWidth: 1.2,
-    borderColor: "#bbb",
+    width: 16,
+    height: 16,
+    borderRadius: 12,
+    borderWidth: 1.8,
+    borderColor: "#7f8c8d",
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 6,
+    marginRight: 8,
   },
   
   radioOuterSelected: { 
-    borderColor: "#000" 
+    borderColor: "#2980ff" 
   },
   
   radioInner: {
-    width: 8,
-    height: 8,
-    borderRadius: 6,
-    backgroundColor: "#000",
+    width: 10,
+    height: 10,
+    borderRadius: 8,
+    backgroundColor: "#2980ff",
   },
   
   submitButton: {
-    backgroundColor: "#f2f2f2",
-    borderRadius: 20,
-    paddingVertical: 14,
+    backgroundColor: "#2980ff",
+    borderRadius: 24,
+    paddingVertical: 16,
     alignItems: "center",
-    marginTop: 10,
-    marginBottom: 90,
+    marginTop: 20,
+    marginBottom: 100,
+    shadowColor: "#2166cc",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 8,
   },
   
   submitButtonText: { 
     fontWeight: "700", 
-    fontSize: 18, 
-    color: "#000" 
+    fontSize: 20, 
+    color: "#fff" 
   }
 
 });

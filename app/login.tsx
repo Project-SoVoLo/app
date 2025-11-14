@@ -260,11 +260,11 @@ export default function Login() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.button, { backgroundColor: '#FECB00', marginTop: 10, marginBottom: 10 }]}
+          style={[styles.button, styles.kakaoButton]}
           onPress={() => setShowKakaoWebView(true)}
           disabled={isProcessing}
         >
-          <Text style={[styles.buttonText, { color: '#3C1E1E' }]}>카카오 로그인</Text>
+          <Text style={[styles.buttonText]}>카카오 로그인</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={() => router.replace('/join')} disabled={isProcessing}>
@@ -301,64 +301,112 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
     backgroundColor: '#fff',
   },
 
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 30,
+    fontSize: 30,
+    fontWeight: '800',
+    marginBottom: 36,
+    color: '#2c3e50',
   },
 
   input: {
     width: '100%',
-    height: 50,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    marginBottom: 15,
+    height: 52,
+    borderRadius: 10,
+    paddingHorizontal: 18,
+    marginBottom: 18,
     fontSize: 16,
+    backgroundColor: '#f4f6fb',
+    shadowColor: '#a3c4f3',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 3,
   },
 
   button: {
     width: '100%',
-    height: 50,
-    backgroundColor: '#007bff',
+    height: 52,
+    backgroundColor: '#4a90e2',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 8,
+    borderRadius: 12,
+    shadowColor: '#234892',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    elevation: 7,
   },
 
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
+    color: '#f1f2f6',
+    fontSize: 19,
+    fontWeight: '700',
   },
 
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
   },
 
   checkbox: {
-    width: 24,
-    height: 24,
+    width: 26,
+    height: 26,
     borderWidth: 2,
-    borderColor: '#007bff',
-    borderRadius: 4,
+    borderColor: '#4a90e2',
+    borderRadius: 6,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#fff',
+    shadowColor: '#c1c7d0',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
   },
 
   checkedBox: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#4a90e2',
   },
 
   checkboxLabel: {
-    marginLeft: 8,
-    fontSize: 16,
+    marginLeft: 10,
+    fontSize: 17,
+    color: '#2f3542',
+    fontWeight: '600',
+  },
+
+  kakaoButton: {
+    backgroundColor: '#F7E600',
+    marginTop: 12,
+    marginBottom: 12,
+    shadowColor: '#d2c500',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+
+  kakaoButtonText: {
+    color: '#3b1e1e',
+    fontWeight: '700',
+  },
+
+  modalCloseButton: {
+    padding: 18,
+    backgroundColor: '#f1f3f5',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderColor: '#dcdde1',
+  },
+
+  modalCloseButtonText: {
+    color: '#3867d6',
+    fontWeight: '700',
+    fontSize: 17,
   },
 });

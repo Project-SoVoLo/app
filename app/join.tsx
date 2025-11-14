@@ -136,92 +136,117 @@ export default function Join() {
 }
 
 const styles = StyleSheet.create({
-
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f4f7fb',
   },
 
   container: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 30,
+    paddingHorizontal: 24,
+    paddingVertical: 36,
   },
 
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 30,
+    fontSize: 30,
+    fontWeight: '800',
+    marginBottom: 36,
+    color: '#34495e',
   },
 
   input: {
     width: '100%',
-    height: 50,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    marginBottom: 15,
+    height: 54,
+    borderColor: '#aab2bd',
+    borderWidth: 1.3,
+    borderRadius: 12,
+    paddingHorizontal: 18,
+    marginBottom: 18,
     fontSize: 16,
+    backgroundColor: '#fff',
+    shadowColor: '#d6d9e3',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation: 4,
   },
 
   genderContainer: {
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 24,
   },
 
   genderButton: {
     flex: 1,
-    height: 50,
+    height: 54,
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
+    borderColor: '#ced6e0',
+    borderWidth: 1.6,
+    borderRadius: 12,
+    backgroundColor: '#fff',
+    marginHorizontal: 6,
+    shadowColor: '#c7cace',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 4,
   },
 
   genderButtonSelected: {
-    backgroundColor: '#007bff',
-    borderColor: '#007bff',
+    backgroundColor: '#2980ff',
+    borderColor: '#2980ff',
+    shadowColor: '#2166cc',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    elevation: 7,
   },
 
   genderButtonText: {
-    fontSize: 16,
-    color: '#333',
+    fontSize: 17,
+    color: '#555d6e',
   },
 
   genderButtonTextSelected: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: '#f9fafd',
+    fontWeight: '700',
   },
 
   button: {
     width: '100%',
-    height: 50,
-    backgroundColor: '#007bff',
+    height: 54,
+    backgroundColor: '#2980ff',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 8,
-    marginTop: 10,
+    borderRadius: 14,
+    marginTop: 14,
+    shadowColor: '#1e62cc',
+    shadowOffset: { width: 0, height: 7 },
+    shadowOpacity: 0.42,
+    shadowRadius: 11,
+    elevation: 9,
   },
 
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
+    color: '#f9fafd',
+    fontSize: 20,
     fontWeight: 'bold',
+    letterSpacing: 0.4,
   },
 
   linkButton: {
-    marginTop: 20,
+    marginTop: 26,
   },
 
   linkButtonText: {
-    color: '#007bff',
-    fontSize: 16,
-  }
-  
+    color: '#2980ff',
+    fontSize: 17,
+    fontWeight: '600',
+    textDecorationLine: 'underline',
+  },
 });

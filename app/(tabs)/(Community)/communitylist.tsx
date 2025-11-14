@@ -122,75 +122,94 @@ setNotices(sorted);
 }
 
 const styles = StyleSheet.create({
-  
   container: {
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingTop: 20,
+    paddingTop: 24,
   },
 
   contentBox: {
-    flex: 0,
-    width: "90%",
-    borderRadius: 12,
-    paddingBottom: 8,
-    elevation: 1,
+    width: "92%",
+    borderRadius: 16,
+    paddingBottom: 12,
+    backgroundColor: "#fff",
   },
 
   sectionBox: {
     width: "100%",
-    borderRadius: 10,
+    borderRadius: 14,
     marginBottom: 30,
+    padding: 14,
+    shadowColor: "#bec9e4",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
   },
 
   title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: "#000",
-    marginLeft: 4,
+    fontSize: 24,
+    fontWeight: "700",
+    marginBottom: 24,
+    color: "#253858",
+    marginLeft: 8,
   },
 
   headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 6,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 14,
     width: "100%",
-  },
-
-  noticeItem: {
-    padding: 12,
-    borderWidth: 0.5,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    marginBottom: 12,
-    backgroundColor: '#fafafa',
-  },
-
-  noticeTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-
-  noticeDate: {
-    marginTop: 4,
-    fontSize: 12,
-    color: '#666'
-  },
-
-  backButton: {
-    marginBottom: 16,
+    paddingHorizontal: 8,
   },
 
   backButtonText: {
-    fontSize: 16,
-    color: "#000",
+    fontSize: 17,
+    color: "#2d3f60",
+    fontWeight: "600",
   },
 
   addButton: {
-    marginBottom: 16,
+    padding: 8,
   },
 
+  noticeItem: {
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 18,
+    backgroundColor: "#f4f6fb",
+    shadowColor: "#a3c4f3",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 7,
+    elevation: 4,
+  },
+
+  noticeTitle: {
+    fontSize: 17,
+    fontWeight: "700",
+    color: "#2e435f",
+  },
+
+  noticeDate: {
+    marginTop: 6,
+    fontSize: 13,
+    color: "#708090",
+  },
+
+  iconGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 14,
+    marginTop: 6,
+  },
+
+  iconCount: {
+    marginLeft: 6,
+    fontSize: 13,
+    color: "#e0245e",
+    fontWeight: "600",
+  },
 });

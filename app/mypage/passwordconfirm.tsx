@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, TouchableOpacity, Text, Alert, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import axios from '../api/axios';
 
 export default function PasswordConfirm() {
@@ -65,44 +65,62 @@ export default function PasswordConfirm() {
 }
 
 const styles = StyleSheet.create({
-    container: { 
-        flex: 1, 
-        // justifyContent: 'center', 
-        padding: 20,
-        backgroundColor: '#fff',
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        marginBottom: 30,
-    },
-    input: {
-        height: 50,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 8,
-        paddingHorizontal: 15,
-        marginBottom: 20,
-        fontSize: 16,
-        },
-    button: {
-        height: 50,
-        backgroundColor: '#007bff',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 8,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    backButton: {
-        marginBottom: 16,
-    },
-        
-    backButtonText: {
-        fontSize: 16,
-        color: "#000",
-    },
+  container: { 
+    flex: 1, 
+    paddingHorizontal: 24,
+    paddingTop: 36,
+    backgroundColor: '#fff',
+  },
+
+  title: {
+    fontSize: 30,
+    fontWeight: '700',
+    marginBottom: 36,
+    color: '#253858',
+  },
+
+  backButton: {
+    marginBottom: 24,
+  },
+  
+  backButtonText: {
+    fontSize: 17,
+    color: '#2c3e50',
+    fontWeight: '600',
+  },
+
+  input: {
+    height: 54,
+    borderRadius: 14,
+    paddingHorizontal: 20,
+    marginBottom: 26,
+    fontSize: 16,
+    backgroundColor: '#f4f6fb',
+    color: '#34495e',
+    shadowColor: '#a3c4f3',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.35,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+
+  button: {
+    height: 54,
+    backgroundColor: '#4a90e2',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 14,
+    shadowColor: '#3a72c4',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.45,
+    shadowRadius: 9,
+    elevation: 7,
+  },
+
+  buttonText: {
+    color: '#f1f2f6',
+    fontSize: 19,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
 });

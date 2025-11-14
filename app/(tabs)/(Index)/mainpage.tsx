@@ -229,7 +229,7 @@ export default function MainPage() {
           <View style={styles.sectionBox}>
             <Text style={styles.sectionTitle}>내가 작성한 글</Text>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/inquirylist')}>
               <Text style={styles.subSectionTitle}>건의사항</Text>
             </TouchableOpacity>
             {isLoggedIn ? (
@@ -253,7 +253,7 @@ export default function MainPage() {
               <Text>글을 보려면 로그인이 필요합니다.</Text>
             )}
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/communitylist')}>
               <Text style={styles.subSectionTitle}>커뮤니티</Text>
             </TouchableOpacity>
             {isLoggedIn ? (
@@ -384,7 +384,7 @@ export default function MainPage() {
             {cardNews.length > 0 ? (
               <Carousel
                 width={screenWidth * 0.9}
-                height={170}
+                height={280}
                 data={cardNews}
                 mode="horizontal-stack"
                 modeConfig={{ snapDirection: 'left' }}
@@ -416,183 +416,198 @@ export default function MainPage() {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: "#fff", 
+    backgroundColor: "#fff",
     alignItems: "center",
-    paddingTop: 20
+    paddingTop: 24,
+    paddingBottom: 20, 
   },
   contentBox: { 
-    flex: 0, width: "90%", 
-    borderRadius: 12, 
-    paddingBottom: 8, 
-    elevation: 1 
+    flex: 0, 
+    width: "92%", 
+    borderRadius: 16, 
+    paddingBottom: 16, 
+    backgroundColor: "#fff",
+    elevation: 5,
   },
   sectionBox: { 
     width: "100%", 
-    backgroundColor: "#f2f2f2", 
-    borderRadius: 10, 
-    padding: 10, 
-    marginBottom: 30 
+    backgroundColor: "#f4f6fb", 
+    borderRadius: 14, 
+    padding: 16, 
+    marginBottom: 28,
+    shadowColor: "#a3c4f3",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 5,
+    elevation: 3,
   },
   sectionTitle: { 
-    fontSize: 18, 
-    fontWeight: "bold", 
-    marginTop: 4, 
-    marginBottom: 6, 
-    marginLeft: 4, 
-    color: "#000" 
-  },
-  CardSectionTitle: { 
-    fontSize: 18, 
-    fontWeight: "bold", 
-    marginTop: 4, 
+    fontSize: 20, 
+    fontWeight: "700", 
     marginBottom: 10, 
-    marginLeft: 4, 
-    color: "#000" 
+    color: "#2c3e50",
+    letterSpacing: 0.3,
   },
   postItem: { 
     backgroundColor: "#fff", 
-    padding: 11, 
-    marginVertical: 5, 
-    borderRadius: 8, 
+    padding: 14, 
+    marginVertical: 6, 
+    borderRadius: 12, 
     alignItems: "flex-start", 
-    width: "99%", 
-    shadowColor: "#000", 
-    shadowOffset: { width: 0, height: 1 }, 
-    shadowOpacity: 0.08, 
-    shadowRadius: 2, 
-    elevation: 2 
+    width: "100%", 
+    shadowColor: "#b0c4de",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 4,
   },
   postTitle: { 
-    fontSize: 14, 
-    fontWeight: "bold", 
-    color: "#222", 
-    marginBottom: 3 
+    fontSize: 16, 
+    fontWeight: "600", 
+    color: "#34495e", 
+    marginBottom: 4,
   },
   postUser: { 
-    fontSize: 12, 
-    color: "#666" 
+    fontSize: 13, 
+    color: "#95a5a6", 
   },
   cardNewsItem: {
     backgroundColor: "#fff",
-    padding: 11,
-    marginVertical: 5,
-    borderRadius: 8,
+    padding: 14,
+    marginVertical: 6,
+    borderRadius: 14,
     alignItems: "flex-start",
-    width: "93%",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 2,
-    elevation: 2,
+    width: "92%",
+    shadowColor: "#b0c4de",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 7,
+    elevation: 5,
   },
   cardImage: { 
     width: "100%", 
-    height: 90, 
-    borderRadius: 12, 
-    marginBottom: 8 
+    height: 200, 
+    borderRadius: 14, 
+    marginBottom: 10,
   },
   cardTitle: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#222",
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#2c3e50",
   },
   cardDate: { 
-    fontSize: 12, 
-    color: "#666" 
+    fontSize: 13, 
+    color: "#7f8c8d" 
   },
   subSectionTitle: { 
-    fontSize: 15, 
-    fontWeight: 'bold', 
-    marginTop: 12, 
-    marginBottom: 4,
-    marginLeft: 4, 
-    color: '#1a1a1a' 
-  }
+    fontSize: 16, 
+    fontWeight: '700', 
+    marginTop: 14, 
+    marginBottom: 6,
+    color: '#34495e',
+  },
 });
 
-// 포춘쿠키 스타일 추가
+//포춘쿠키 스타일
 const fortuneStyles = StyleSheet.create({
-
   fortuneBtn: {
     flexDirection: "row",
-    backgroundColor: "#f2f2f2",
-    borderRadius: 8,
-    padding: 12,
+    backgroundColor: "#4a90e2",
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 20,
-    width: "90%",
-    alignSelf: "center"
+    marginBottom: 24,
+    width: "92%",
+    alignSelf: "center",
+    shadowColor: "#3a72c4",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 7,
   },
   fortuneBtnImg: { 
-    width: 30, 
-    height: 30, 
-    marginRight: 8 
+    width: 32, 
+    height: 32, 
+    marginRight: 12 
   },
-
   fortuneBtnText: { 
-    fontSize: 17, 
-    fontWeight: "bold", 
-    color: "#000" 
+    fontSize: 18, 
+    fontWeight: "700", 
+    color: "#fff",
+    letterSpacing: 0.7,
   },
 
   modalWrap: {
     flex: 1, 
-    backgroundColor: "rgba(0,0,0,0.35)",
+    backgroundColor: "rgba(20,20,20,0.5)",
     alignItems: "center", 
     justifyContent: "center"
   },
-
   popupBox: {
-    backgroundColor: "#fff",
-    borderRadius: 16,
-    padding: 24, 
-    minWidth: 270,
+    backgroundColor: "#ffffff",
+    borderRadius: 20,
+    padding: 28, 
+    minWidth: 280,
     alignItems: "center",
+    shadowColor: "#0d47a1",
+    shadowOffset: { width: 0, height: 9 },
+    shadowOpacity: 0.25,
+    shadowRadius: 18,
+    elevation: 10,
   },
-
   title: { 
-    fontSize: 18, 
-    fontWeight: "bold", 
-    color: "#000", 
-    marginBottom: 26 
+    fontSize: 20, 
+    fontWeight: "700", 
+    color: "#34495e", 
+    marginBottom: 28,
   },
-  
   cookieRow: { 
     flexDirection: "row", 
-    justifyContent: "center", 
-    gap: 10, 
-    marginTop: 10 
+    justifyContent: "space-around", 
+    width: "100%",
   },
-  
   cookie: { 
-    marginHorizontal: 5 
+    marginHorizontal: 8,
+    shadowColor: "#5271ff",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 8,
   },
-  
   cookieImg: { 
-    width: 48, 
-    height: 48 
+    width: 52, 
+    height: 52, 
   },
-
   messageBox: { 
     alignItems: "center", 
-    paddingTop: 18 
+    paddingTop: 22 
   },
-
   fortuneMsg: { 
-    fontSize: 18, 
-    color: "#000", 
+    fontSize: 20, 
+    color: "#34495e", 
     textAlign: "center", 
-    marginBottom: 24, 
-    fontWeight: "bold" 
+    marginBottom: 26, 
+    fontWeight: "700" 
   },
-
   confirmBtn: { 
-    backgroundColor: "#f2f2f2", borderRadius: 8, padding: 14, width: 120, alignItems: "center" },
-  
+    backgroundColor: "#4a90e2", 
+    borderRadius: 12, 
+    paddingVertical: 16, 
+    width: 140, 
+    alignItems: "center",
+    shadowColor: "#2562cb",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 9,
+    elevation: 9,
+  },
   confirmText: { 
-    color: "#000", 
-    fontWeight: "bold", 
-    fontSize: 16 
+    color: "#ffffff", 
+    fontWeight: "700", 
+    fontSize: 17,
+    letterSpacing: 0.7,
   }
 });
+

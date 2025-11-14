@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import dayjs from "dayjs";
 import { useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from "react";
 import { Alert, Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -16,6 +17,25 @@ const formatDate = (dateStr) => {
   return dateStr.slice(-8).replace(/-/g, '.');
 };
 
+const chartConfig = {
+  backgroundColor: 'transparent',
+  backgroundGradientFrom: '#f9fafc',
+  backgroundGradientTo: '#f9fafc',
+  decimalPlaces: 1,
+  color: (opacity = 1) => `rgba(44, 62, 80, ${opacity})`,
+  labelColor: (opacity = 1) => `rgba(44, 62, 80, ${opacity})`,
+  style: {
+    borderRadius: 16,
+  },
+  propsForDots: {
+    r: '5',
+    strokeWidth: '2',
+    stroke: '#f9fafc',
+  },
+  fillShadowGradient: '#3867d6',
+  fillShadowGradientOpacity: 0.3,
+  fromZero: true,
+};
 
 export default function Condition() {
   const router = useRouter();
@@ -56,29 +76,68 @@ export default function Condition() {
     }, {});
   }, [data]);
 
-  //차트 x축 라벨로 사용 (변환된 날짜)
-  const allDates = useMemo(() => {
-    if (!data) return [];
-    const dateSet = new Set(data.map(item => formatDate(item.diagnosisDate)));
-    return Array.from(dateSet).sort((a, b) => new Date(a) - new Date(b));
-  }, [data]);
-
-  //차트 데이터 생성
   const getChartDataForType = (items) => {
-    const scoreMap = {};
-    items.forEach(item => {
-      scoreMap[formatDate(item.diagnosisDate)] = Number(item.diagnosisScore) || 0;
-    });
+    if (!Array.isArray(items) || items.length === 0) {
+      return { labels: [], datasets: [  [] ] };
+    }
 
-    const dataArr = allDates.map(date => scoreMap[date] ?? 0);
+    if (items.length === 1) {
+    const mainDate = dayjs(items[0].diagnosisDate);
+    const labels = [mainDate.subtract(1, 'day').format('MM.DD'), mainDate.format('MM.DD')];
+    for (let i = 1; i < 7; i++) {
+      labels.push(mainDate.add(i, 'day').format('MM.DD'));
+    }
+    const value = Number(items[0].diagnosisScore) || 0;
+    const dataArr = [0, value, value, value, value, value, value, value];
+
     return {
-      labels: allDates,
+      labels,
       datasets: [
         {
-          data : dataArr,
+           data : dataArr,
           strokeWidth: 2,
         }
-      ]
+      ],
+    };
+  }
+
+
+    const sorted = [...items].sort((a, b) => new Date(a.diagnosisDate) - new Date(b.diagnosisDate));
+    const startDate = dayjs(sorted[0].diagnosisDate);
+    const endDate = dayjs(sorted[sorted.length - 1].diagnosisDate);
+    const totalDays = endDate.diff(startDate, 'day');
+    const step = totalDays / (8 - 1);
+
+    // 점수 매핑
+    const scoreMap = {};
+    sorted.forEach(item => {
+      scoreMap[dayjs(item.diagnosisDate).format('YYYY.MM.DD')] = Number(item.diagnosisScore) || 0;
+    });
+
+    const labels = [];
+    const dataArr = [];
+    let lastScore = 0;
+
+    for (let i = 0; i < 8; i++) {
+      const currentDate = startDate.add(step * i, 'day').format('YYYY.MM.DD');
+      labels.push(currentDate.slice(5));
+
+      if (scoreMap.hasOwnProperty(currentDate)) {
+        lastScore = scoreMap[currentDate];
+        dataArr.push(lastScore);
+      } else {
+        dataArr.push(lastScore);
+      }
+    }
+
+    return {
+      labels,
+      datasets: [
+        {
+            data : dataArr,
+          strokeWidth: 2,
+        }
+      ],
     };
   };
 
@@ -96,53 +155,33 @@ export default function Condition() {
         </View>
 
         {loading && <Text>로딩중...</Text>}
-        
+
         {
           data && data.length > 0
             ? Object.entries(groupedData).map(([type, items]) => (
-                <View key={type} style={{ marginBottom: 30 }}>
-                  <Text style={styles.chartTitle}>{type}</Text>
-                  <LineChart
-                    data={getChartDataForType(items)}
-                    width={screenWidth-32}
-                    height={220}
-                    chartConfig={{
-                      backgroundColor: '#fff',
-                      backgroundGradientFrom: '#fff',
-                      backgroundGradientTo: '#fff',
-                      decimalPlaces: 1,
-                      color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                      labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                      style: {
-                        marginVertical: 8,
-                        borderRadius: 16,
-                      },
-                      propsForLabels: {
-                        fontSize: 8,
-                      },
-                      propsForDots: {
-                        r: '4',
-                        strokeWidth: '2',
-                        stroke: '#fff',
-                      },
-                    }}
-                    bezier
-                    style={{
-                      marginVertical: 8,
-                      borderRadius: 16,
-                    }}
-                  />
-                  <View>
-                    {items.map((item, index) => (
-                      <View key={index} style={styles.itemBox}>
-                        {/* 상세 부분은 원래 날짜 형식 그대로 표기 */}
-                        <Text>날짜: {item.diagnosisDate}</Text>
-                        <Text>점수: {item.diagnosisScore}</Text>
-                      </View>
-                    ))}
-                  </View>
+              <View key={type} style={{ marginBottom: 30 }}>
+                <Text style={styles.chartTitle}>{type}</Text>
+                <LineChart
+                  data={getChartDataForType(items)}
+                  width={screenWidth - 32}
+                  height={220}
+                  chartConfig={chartConfig}
+                  bezier
+                  style={{
+                    marginVertical: 8,
+                    borderRadius: 16,
+                  }}
+                />
+                <View>
+                  {items.map((item, index) => (
+                    <View key={index} style={styles.itemBox}>
+                      <Text>날짜: {item.diagnosisDate}</Text>
+                      <Text>점수: {item.diagnosisScore}</Text>
+                    </View>
+                  ))}
                 </View>
-              ))
+              </View>
+            ))
             : !loading && <Text>조회 가능한 내역이 없습니다.</Text>
         }
       </ScrollView>
@@ -152,56 +191,69 @@ export default function Condition() {
 
 
 const styles = StyleSheet.create({
-  
   container: {
     flex: 1,
-    backgroundColor: "#ffff",
-    paddingHorizontal: 16,
-    paddingTop: 20,
+    backgroundColor: "#fff",
+    paddingHorizontal: 24,
+    paddingTop: 30,
   },
 
   backButton: {
-    marginBottom: 16,
+    marginBottom: 20,
   },
 
   backButtonText: {
-    fontSize: 16,
-    color: "#000",
+    fontSize: 17,
+    color: "#2c3e50",
+    fontWeight: "600",
   },
 
   infoBox: {
-    marginBottom: 20,
+    marginBottom: 24,
   },
 
   infoLabel: {
     fontSize: 16,
-    color: '#888',
+    color: "#7f8a9a",
+    fontWeight: "600",
   },
 
   infoText: {
     fontSize: 20,
-    marginTop: 4,
+    marginTop: 8,
+    color: "#34495e",
+    fontWeight: "500",
   },
 
   title: {
-      fontSize: 28,
-      fontWeight: 'bold',
-      marginBottom: 30,
+    fontSize: 30,
+    fontWeight: "700",
+    marginBottom: 36,
+    color: "#253858",
   },
 
   chartTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 12,
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: 14,
+    color: "#2c3e50",
   },
 
   itemBox: {
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    marginBottom: 10,
-    backgroundColor: '#f9f9f9',
+    padding: 16,
+    borderRadius: 14,
+    marginBottom: 16,
+    backgroundColor: "#f4f6fb",
+    shadowColor: "#a3c4f3",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 7,
+    elevation: 4,
   },
 
+  itemText: {
+    fontSize: 15,
+    color: "#34495e",
+    marginBottom: 6,
+  },
 });

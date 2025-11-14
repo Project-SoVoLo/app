@@ -110,7 +110,6 @@ const handleLogout = async () => {
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -118,65 +117,79 @@ const styles = StyleSheet.create({
 
   content: {
     flex: 1,
-    padding: 20,
+    paddingHorizontal: 24,
+    paddingTop: 36,
   },
 
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 30,
+    fontSize: 30,
+    fontWeight: '700',
+    marginBottom: 36,
+    color: '#2c3e50',
   },
 
   infoBox: {
-    marginBottom: 20,
+    marginBottom: 24,
   },
 
   infoLabel: {
     fontSize: 16,
-    color: '#888',
+    color: '#7f8a9a',
+    fontWeight: '600',
   },
 
   infoText: {
     fontSize: 20,
-    marginTop: 4,
+    marginTop: 8,
+    color: '#34495e',
+    fontWeight: '500',
   },
 
   Button: {
-    marginTop: 20,
-    backgroundColor: '#f2f2f2',
-    paddingVertical: 15,
-    borderRadius: 8,
+    marginTop: 22,
+    backgroundColor: '#f4f6fb',
+    paddingVertical: 16,
+    borderRadius: 14,
     alignItems: 'center',
+    shadowColor: '#a3c4f3',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 6,
   },
 
   ButtonText: {
-    color: '#000',
+    color: '#2c3e50',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
 
   logoutButton: {
-    marginTop: 30,
-    backgroundColor: '#dc3545',
-    paddingVertical: 15,
-    borderRadius: 8,
+    marginTop: 36,
+    backgroundColor: '#d33f49',
+    paddingVertical: 16,
+    borderRadius: 14,
     alignItems: 'center',
+    shadowColor: '#9d2a2f',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 8,
   },
 
   logoutButtonText: {
-    color: '#fff',
+    color: '#f7f9fc',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
 
   backButton: {
-        marginBottom: 16,
+    marginBottom: 20,
   },
 
-        
   backButtonText: {
-      fontSize: 16,
-      color: "#000",
-  }
-
+    fontSize: 17,
+    color: '#2c3e50',
+    fontWeight: '600',
+  },
 });

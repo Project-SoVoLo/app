@@ -92,52 +92,54 @@ export default function Account() {
 }
 
 const styles = StyleSheet.create({
-
-    container: {
+  container: {
     flex: 1,
     backgroundColor: '#fff',
-    },
+  },
 
-    content: {
-        flex: 1,
-        padding: 20,
-    },
-    
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        marginBottom: 30,
-    },
+  content: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 30,
+  },
 
-    backButton: {
-        marginBottom: 16,
-    },
+  title: {
+    fontSize: 30,
+    fontWeight: '700',
+    marginBottom: 36,
+    color: '#2c3e50',
+  },
 
-    backButtonText: {
-        fontSize: 16,
-        color: "#000",
-    },
+  backButton: {
+    marginBottom: 18,
+  },
 
-    subtitle: {
-        fontSize: 18,
-        marginBottom: 8,
-        marginLeft: 12,
-        fontWeight: 'bold',
-    },
+  backButtonText: {
+    fontSize: 17,
+    color: '#34495e',
+    fontWeight: '600',
+  },
 
-    value: {
-        width: '100%',
-        minHeight: 50,
-        fontSize: 16,
-        backgroundColor: '#f2f2f2',
-        borderRadius: 8,
-        paddingHorizontal: 15,
-        marginBottom: 15,
-        color: '#000',
-        textAlignVertical: 'center',
-        textAlign: 'left',
-        justifyContent: 'center',
-        paddingTop: 15,
-        fontWeight: '500'
-  }
+  subtitle: {
+    fontSize: 19,
+    marginBottom: 10,
+    marginLeft: 14,
+    fontWeight: '700',
+    color: '#253858',
+  },
+
+  value: {
+    width: '100%',
+    minHeight: 52,
+    fontSize: 17,
+    backgroundColor: '#f4f6fb',
+    borderRadius: 12,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    marginBottom: 18,
+    color: '#34495e',
+    textAlignVertical: 'center',
+    textAlign: 'left',
+    fontWeight: '500',
+  },
 });

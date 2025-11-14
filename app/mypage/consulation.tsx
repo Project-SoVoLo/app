@@ -35,7 +35,7 @@ export default function Consulation() {
     })
       .then(res => {
         setData(res.data);
-        console.log(res.data);
+        // console.log(res.data);
       })
       .catch(err => {
         Alert.alert("오류", "내역을 불러오지 못했습니다.");
@@ -99,48 +99,62 @@ return (
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor : "#ffff",
-        paddingHorizontal: 16,
-        paddingTop: 20,
-    },
-    
-    backButton: {
-        marginBottom: 16,
-    },
-    
-    backButtonText: {
-        fontSize: 16,
-        color: "#000",
-    },
-      infoBox: {
-    marginBottom: 20,
-    },
-  
-    infoLabel: {
-      fontSize: 16,
-      color: '#888',
-    },
-    
-    infoText: {
-      fontSize: 20,
-      marginTop: 4,
-    },
-    
-    title: {
-      fontSize: 28,
-      fontWeight: 'bold',
-      marginBottom: 30,
-    },
-    
-    itemBox: {
-      padding: 12,
-      borderWidth: 1,
-      borderColor: '#ccc',
-      borderRadius: 8,
-      marginBottom: 10,
-      backgroundColor: '#f9f9f9',
-    },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    paddingHorizontal: 24,
+    paddingTop: 30,
+  },
 
+  backButton: {
+    marginBottom: 20,
+  },
+
+  backButtonText: {
+    fontSize: 17,
+    color: "#2c3e50",
+    fontWeight: "600",
+  },
+
+  title: {
+    fontSize: 30,
+    fontWeight: "700",
+    marginBottom: 36,
+    color: "#253858",
+  },
+
+  infoBox: {
+    marginBottom: 24,
+  },
+
+  infoLabel: {
+    fontSize: 16,
+    color: "#7f8a9a",
+    fontWeight: "600",
+  },
+
+  infoText: {
+    fontSize: 20,
+    marginTop: 8,
+    color: "#34495e",
+    fontWeight: "500",
+  },
+
+  itemBox: {
+    padding: 16,
+    borderRadius: 14,
+    marginBottom: 16,
+    backgroundColor: "#f4f6fb",
+    shadowColor: "#a3c4f3",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 7,
+    elevation: 4,
+  },
+
+  itemText: {
+    fontSize: 15,
+    color: "#34495e",
+    marginBottom: 6,
+  },
 });

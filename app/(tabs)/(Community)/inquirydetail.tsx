@@ -189,6 +189,7 @@ export default function InquiryDetail() {
             </TouchableOpacity>
           </View>
           <Text style={styles.title}>{inquiry.title}</Text>
+          <Text style={styles.author}>작성자: {inquiry.author}</Text>
           <Text style={styles.content}>{inquiry.content}</Text>
 
           <View style={styles.sectionBox}>
@@ -293,152 +294,189 @@ export default function InquiryDetail() {
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingTop: 20,
-    marginBottom: 40
+    paddingTop: 24,
+    paddingBottom: 30,
   },
 
   contentBox: {
-    flex: 0,
-    width: "90%",
-    borderRadius: 12,
-    paddingBottom: 8,
-    elevation: 1,
-  },
-
-  sectionBox: {
-    width: "100%",
-    borderRadius: 10,
-    marginBottom: 30,
+    width: "92%",
+    backgroundColor: "#f4f6fb",
+    borderRadius: 16,
+    paddingVertical: 24,
+    paddingHorizontal: 18,
+    elevation: 3,
+    shadowColor: "#a3c4f3",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.18,
+    shadowRadius: 6,
+    marginBottom: 28,
   },
 
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: "#000",
+    fontWeight: "700",
+    color: "#2c3e50",
+    marginBottom: 24,
   },
 
   content: {
     fontSize: 16,
-    marginVertical: 12
+    color: "#34495e",
+    marginBottom: 20,
+    lineHeight: 23,
+  },
+
+  author: {
+    fontSize: 14,
+    color: "#62718d",
+    marginBottom: 12,
   },
 
   input: {
-    borderColor: '#ccc',
+    width: "92%",
+    borderColor: "#cbd2e0",
     borderWidth: 1,
-    borderRadius: 6,
-    padding: 10,
-    marginVertical: 16,
-    width: '90%'
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    fontSize: 16,
+    marginBottom: 20,
+    marginTop: 12,
+  },
+
+  sectionBox: {
+    width: "100%",
+    borderRadius: 14,
+    backgroundColor: "#f4f6fb",
+    marginTop: 12,
+    marginBottom: 28,
   },
 
   commentsSection: {
-    marginTop: 10
+    marginTop: 16,
   },
 
   commentsTitle: {
-    fontWeight: '600',
-    marginBottom: 20,
-    fontSize: 14,
-    color: "#222"
+    fontWeight: "700",
+    color: "#2c3e50",
+    fontSize: 16,
+    marginBottom: 18,
   },
 
   commentItem: {
-    padding: 12,
-    borderWidth: 0.5,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    marginBottom: 12,
-    backgroundColor: '#fafafa',
+    backgroundColor: "#f9fafc",
+    borderRadius: 10,
+    padding: 14,
+    marginBottom: 14,
+    shadowColor: "#b0c4de",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 3,
   },
 
   commentRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
 
   commentUser: {
-    fontWeight: "bold",
-    color: "#222",
+    fontWeight: "600",
+    color: "#253858",
   },
 
   commentDate: {
     fontSize: 12,
-    color: '#666',
-    marginTop: 2,
+    color: "#7f8c8d",
+    marginTop: 4,
   },
 
   commentForm: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
+    flexDirection: "row",
+    marginTop: 12,
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 
   commentInput: {
     flex: 1,
-    borderColor: '#ccc',
+    borderColor: "#cbd2e0",
     borderWidth: 1,
-    borderRadius: 6,
-    padding: 10,
-    fontSize: 14,
-    color: "#222",
-    marginRight: 10,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    fontSize: 16,
+    color: "#34495e",
+    marginRight: 12,
   },
 
   commentButton: {
-    backgroundColor: "#4287f5",
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 7,
+    backgroundColor: "#4e7bec",
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    borderRadius: 12,
   },
 
   loginText: {
-    color: 'red'
+    color: "#b44",
+    fontWeight: "600",
+    marginTop: 16,
+    textAlign: "center",
   },
 
   modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0.35)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   optionsModal: {
-    backgroundColor: '#f2f2f2',
-    borderRadius: 10,
-    paddingVertical: 8,
-    minWidth: 110,
-    marginTop: 30,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    minWidth: 140,
+    marginTop: 32,
     marginRight: 24,
+    elevation: 6,
+    shadowColor: "#244aab",
+    shadowOffset: { width: 0, height: 7 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
   },
 
   optionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 18,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 14,
   },
 
   optionText: {
-    fontSize: 15,
-    marginLeft: 10,
-    color: '#222',
+    fontSize: 16,
+    color: "#2c3e50",
+    marginLeft: 14,
+    fontWeight: "600",
   },
 
   deleteModal: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 10,
-    width: 300,
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 20,
+    width: 320,
+    elevation: 10,
+    shadowColor: "#2e3e62",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 18,
   },
 
   modalButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    padding: 14,
   },
 });

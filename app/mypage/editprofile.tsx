@@ -162,88 +162,69 @@ const styles = StyleSheet.create({
 
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f9fafc',
   },
 
   container: {
-        flex: 1,
-        backgroundColor : "#fff",
-        paddingHorizontal: 16,
-        paddingTop: 20,
-    },
+    flexGrow: 1,
+    backgroundColor : "#fff",
+    paddingHorizontal: 24,
+    paddingTop: 30,
+    paddingBottom: 40,
+  },
 
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 30,
+    fontSize: 30,
+    fontWeight: '700',
+    marginBottom: 36,
+    color: '#2c3e50',
   },
-  
+
   input: {
     width: '100%',
-    height: 50,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    marginBottom: 15,
+    height: 54,
+    paddingHorizontal: 20,
+    marginBottom: 18,
     fontSize: 16,
-  },
-
-  genderContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-
-  genderButton: {
-    flex: 1,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-  },
-
-  genderButtonSelected: {
-    backgroundColor: '#007bff',
-    borderColor: '#007bff',
-  },
-
-  genderButtonText: {
-    fontSize: 16,
-    color: '#333',
-  },
-
-  genderButtonTextSelected: {
-    color: '#fff',
-    fontWeight: 'bold',
+    backgroundColor: '#f4f6fb',
+    shadowColor: '#a3c4f3',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.35,
+    shadowRadius: 6,
+    elevation: 4,
+    color: '#34495e',
   },
 
   button: {
     width: '100%',
-    height: 50,
-    backgroundColor: '#007bff',
+    height: 54,
+    backgroundColor: '#4a90e2',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 8,
-    marginTop: 10,
+    borderRadius: 14,
+    marginTop: 22,
+    shadowColor: '#3a72c4',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.45,
+    shadowRadius: 9,
+    elevation: 7,
   },
 
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
+    color: '#f1f2f6',
+    fontSize: 19,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
 
   linkButton: {
-    marginTop: 20,
+    marginTop: 26,
   },
 
   linkButtonText: {
-    color: '#007bff',
-    fontSize: 16,
+    color: '#3867d6',
+    fontSize: 17,
+    fontWeight: '600',
+    textDecorationLine: 'underline',
   }
-
 });

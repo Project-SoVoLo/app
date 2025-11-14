@@ -100,66 +100,79 @@ export default function NoticeList() {
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingTop: 20,
+    paddingTop: 24,
   },
 
-    contentBox: {
-    flex: 0,
-    width: "90%",
-    borderRadius: 12,
-    paddingBottom: 8,
-    elevation: 1,
+  contentBox: {
+    width: "92%",
+    borderRadius: 16,
+    paddingBottom: 12,
+    backgroundColor: "#fff",
   },
 
   title: { 
-    fontSize: 22, 
-    fontWeight: 'bold', 
-    marginBottom: 20
-    },
-    
+    fontSize: 24, 
+    fontWeight: '700', 
+    marginBottom: 24,
+    color: '#2c3e50',
+    paddingLeft: 8,
+  },
+
   headerRow: { 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
     alignItems: 'center', 
-    marginBottom: 6 
+    marginBottom: 12,
+    paddingHorizontal: 8,
+  },
+
+  backButtonText: {
+    fontSize: 17,
+    color: "#253858",
+    fontWeight: '600',
+  },
+
+  addButton: { 
+    padding: 8,
   },
 
   noticeItem: {
-    padding: 12,
-    borderWidth: 0.5,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    marginBottom: 12,
-    backgroundColor: '#fafafa',
-    },
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+    backgroundColor: '#f4f6fb',
+    shadowColor: "#a3c4f3",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
 
   noticeTitle: { 
-    fontSize: 16, 
-    fontWeight: '600' 
-    },
+    fontSize: 17, 
+    fontWeight: '700',
+    color: '#2f3e67',
+  },
 
   noticeDate: { 
-    marginTop: 4, 
-    fontSize: 12, 
-    color: '#666' 
-    },
+    marginTop: 6, 
+    fontSize: 13, 
+    color: '#677294', 
+  },
 
-  backButton: {
-    marginBottom: 16,
-    },
-        
-  backButtonText: {
-    fontSize: 16,
-    color: "#000",
-    },
+  iconGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 14,
+  },
 
-  addButton: { 
-    marginBottom: 16,
-    }
-
+  iconCount: {
+    marginLeft: 6,
+    fontSize: 13,
+    color: "#e0245e",
+  },
 });

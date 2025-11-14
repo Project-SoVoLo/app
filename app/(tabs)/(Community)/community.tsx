@@ -232,145 +232,135 @@ export default function Community() {
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingTop: 20,
+    paddingTop: 24,
   },
 
   contentBox: {
-    flex: 0,
-    width: "90%",
-    borderRadius: 12,
-    paddingBottom: 8,
-    elevation: 1,
+    width: "92%",
+    borderRadius: 16,
+    paddingBottom: 12,
+    backgroundColor: "#ffffff",
+    shadowColor: "#b7c1d9",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.13,
+    shadowRadius: 8,
+    elevation: 6,
   },
 
   sectionBox: {
     width: "100%",
-    backgroundColor: "#f2f2f2",
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 30,
+    backgroundColor: "#f4f6fb",
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 28,
+    shadowColor: "#acb7d6",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 3,
   },
 
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginTop: 4,
-    marginBottom: 6,
-    marginLeft: 4,
-    color: "#000",
-  },
-  CardSectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginTop: 4,
-    marginBottom: 10,
-    marginLeft: 4,
-    color: "#000",
-  },
-
-  listContainer: {
-    width: "100%",
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: 12,
+    marginLeft: 6,
+    color: "#253858",
   },
 
   postItem: {
     backgroundColor: "#fff",
-    padding: 11,
-    marginVertical: 5,
-    borderRadius: 8,
+    padding: 14,
+    marginVertical: 8,
+    borderRadius: 12,
     alignItems: "flex-start",
-    width: "99%",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 2,
-    elevation: 2,
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    shadowColor: "#c0c9dd",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 3,
   },
 
   postTitle: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#222",
-    marginBottom: 3,
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#2c3e50",
+    marginBottom: 4,
+    flex: 1,
+    flexWrap: "wrap",
   },
 
   postUser: {
-    fontSize: 12,
-    color: "#666",
-  },
-
-  cardNewsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 0,
-  },
-
-  cardNewsItem: {
-    width: "47%",
-    backgroundColor: "#fff",
-    padding: 8,
-    borderRadius: 8,
-    alignItems: "center",
-    marginHorizontal: 2,
-    marginBottom: 8,
-    shadowColor: "#ccc",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 1,
-    elevation: 1,
-  },
-
-  cardImage: {
-    width: "100%",
-    height: 90,
-    borderRadius: 7,
-    marginBottom: 4,
-  },
-
-  cardTitle: {
     fontSize: 13,
-    textAlign: "center",
-    color: "#333",
+    color: "#718096",
+  },
+
+  iconGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  iconCount: {
+    marginLeft: 6,
+    fontSize: 13,
+    color: "#e0245e",
+  },
+
+  bookmarkIcon: {
+    marginLeft: 16,
   },
 
   modalBg: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.18)",
+    backgroundColor: "rgba(0,0,0,0.25)",
   },
 
   modalContainer: {
     backgroundColor: "#fff",
-    padding: 22,
-    borderRadius: 14,
-    width: 300,
+    padding: 24,
+    borderRadius: 20,
+    width: 320,
     alignItems: "center",
-    elevation: 3,
+    shadowColor: "#415A9B",
+    shadowOffset: { width: 0, height: 7 },
+    shadowOpacity: 0.22,
+    shadowRadius: 15,
+    elevation: 10,
   },
 
   modalTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 7
+    fontSize: 18,
+    fontWeight: "700",
+    marginBottom: 12,
+    color: "#2f3e66",
   },
 
   input: {
-    width: 170,
+    width: 180,
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 6,
-    marginVertical: 7,
-    padding: 8
+    borderColor: "#c8d0e7",
+    borderRadius: 10,
+    marginVertical: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 15,
+    color: "#334155",
   },
 
   comment: {
-    fontSize: 13,
-    color: "#7a7a7a",
-    marginTop: 3
-  }
+    fontSize: 14,
+    color: "#718096",
+    marginTop: 6,
+    textAlign: "center",
+    lineHeight: 20,
+  },
 });

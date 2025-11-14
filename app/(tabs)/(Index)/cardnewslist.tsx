@@ -91,97 +91,97 @@ useEffect(() => {
 }
 
 const styles = StyleSheet.create({
-    
   container: { 
     flex: 1, 
     alignItems: "center",
     backgroundColor: '#fff',
     paddingTop: 20,
+    paddingBottom: 12,
   },
-
   contentBox: { 
-    flex: 0,
-    width: "90%",
-    borderRadius: 12,
+    width: "92%",
+    borderRadius: 14,
     paddingBottom: 8,
-    elevation: 1,
+    backgroundColor: "#fff",
   },
-
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 6,
+    marginBottom: 10,
     width: "100%",
   },
-
-    sectionBox: {
+  sectionBox: {
     width: "100%",
-    borderRadius: 10,
+    borderRadius: 12,
     marginBottom: 30,
+    paddingVertical: 3,
+    paddingHorizontal: 1
   },
-
   title: { 
     fontSize: 22, 
     fontWeight: "bold", 
     marginBottom: 20, 
-    marginLeft: 4, 
-    color: "#000" 
+    marginLeft: 2, 
+    color: "#253858"
   },
-
   cardNewsItem: {
-    backgroundColor: "#fafafa",
-    padding: 11,
+    backgroundColor: "#f4f6fb",
+    padding: 15,
     marginVertical: 8,
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: "flex-start",
     width: "100%",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 2,
+    shadowColor: "#a3c4f3",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.10,
+    shadowRadius: 8,
     elevation: 2,
-    marginBottom: 20
+    marginBottom: 14,
   },
-
   cardImage: { 
     width: "100%", 
     height: 160,
-    borderRadius: 7,
-    marginBottom: 12
+    borderRadius: 8,
+    marginBottom: 14,
+    backgroundColor: "#fff"
   },
-
   cardTitle: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: "bold",
-    color: "#222",
-    marginBottom: 4
+    color: "#263040",
+    marginBottom: 2
   },
-
   cardDate: { 
     fontSize: 12, 
-    color: "#666",
-    marginBottom: 8
+    color: "#7a839a",
+    marginBottom: 6,
+    marginTop: 2
   },
-
   cardContent: { 
     fontSize: 15,
-    color: "#222",
-    marginBottom: 4,
+    color: "#313750",
+    marginBottom: 3,
+    marginTop: 2,
     lineHeight: 22
   },
-
   backButton: {
-    marginBottom: 16,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    marginBottom: 0
   },
-
   backButtonText: {
     fontSize: 16,
-    color: "#000",
+    color: "#2c3e50",
+    fontWeight: "600",
   },
-
   addButton: {
-    marginBottom: 16,
+    paddingHorizontal: 9,
+    paddingVertical: 7,
+    borderRadius: 7,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 0,
+    marginLeft: 4,
   }
-
 });

@@ -192,78 +192,109 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingTop: 20,
+    paddingBottom: 20,
   },
 
   contentBox: { 
-    flex: 0, width: "90%", 
-    borderRadius: 12, 
-    paddingBottom: 8, 
-    elevation: 1 
-    },
+    width: "100%", 
+    borderRadius: 16, 
+    backgroundColor: "#fff",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    shadowColor: "#a3bde0",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 7,
+  },
 
   sectionBox: { 
-    marginBottom: 30 
+    marginBottom: 30,
+    backgroundColor: "#f7faff",
+    borderRadius: 14,
+    padding: 16,
+    shadowColor: "#c2d1f0",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.08,
+    shadowRadius: 5,
+    elevation: 4,
+  },
+
+  sectionTitle: { 
+    fontSize: 18, 
+    fontWeight: "700", 
+    marginBottom: 14, 
+    color: "#274593",
   },
 
   button: {
     width: '48%',
-    backgroundColor: '#f2f2fa',
-    paddingVertical: 15,
-    borderRadius: 8,
-    marginBottom: 15,
+    backgroundColor: '#4a90e2',
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginBottom: 14,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: "#3367d6",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 8,
   },
 
   buttonText: {
-    color: '#000',
-    fontWeight: '600',
+    color: '#fff',
+    fontWeight: '700',
     fontSize: 16,
+    letterSpacing: 0.5,
   },
-
-  sectionTitle: { 
-    fontSize: 16, 
-    fontWeight: "bold", 
-    marginBottom: 10 },
 
   emptyText: { 
     color: "#888", 
     textAlign: "center", 
-    marginTop: 20 
+    marginTop: 30,
+    fontSize: 15,
+    fontStyle: "italic",
   },
 
   feedBox: { 
-    backgroundColor: "#f2f2fa", 
-    padding: 10, 
-    borderRadius: 8, 
-    marginBottom: 8 
+    backgroundColor: "#ffffff", 
+    padding: 14, 
+    borderRadius: 12, 
+    marginBottom: 10,
+    shadowColor: "#b7c3e3",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.16,
+    shadowRadius: 6,
+    elevation: 5,
   },
 
   commentText: { 
-    fontSize: 14, 
-    color: "#222", 
-    marginBottom: 4 
+    fontSize: 15, 
+    color: "#323232", 
+    marginBottom: 6,
+    fontWeight: '500',
   },
   
   commentDate: { 
     fontSize: 12, 
-    color: "#666" 
+    color: "#7a7a7a",
+    fontStyle: "italic",
   },
   
   tableHeader: {
     flexDirection: "row",
-    backgroundColor: "#f2f2fa",
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-    borderRadius: 4,
-    marginBottom: 6
+    backgroundColor: "#dce6f7",
+    paddingVertical: 10,
+    paddingHorizontal: 6,
+    borderRadius: 6,
+    marginBottom: 8,
   },
 
   tableHeaderText: {
     flex: 1,
-    fontWeight: "bold",
-    color: "#333",
+    fontWeight: "700",
+    color: "#2b3a67",
     fontSize: 14,
     textAlign: "center"
   },
@@ -271,38 +302,48 @@ const styles = StyleSheet.create({
   tableRow: {
     flexDirection: "row",
     borderBottomWidth: 1,
-    borderColor: "#ececec",
-    paddingVertical: 8,
-    paddingHorizontal: 4,
+    borderColor: "#e5e7f1",
+    paddingVertical: 10,
+    paddingHorizontal: 6,
     alignItems: "center",
+    backgroundColor: "#fafcff",
   },
 
   tableCell: {
     flex: 1,
-    color: "#222",
+    color: "#444",
     fontSize: 13,
     textAlign: "center"
   },
 
   searchInput: {
     flex: 1,
-    borderColor: "#ccc",
+    borderColor: "#9bb3e0",
     borderWidth: 1,
-    borderRadius: 6,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    fontSize: 14,
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    fontSize: 15,
     backgroundColor: "#fff",
-    marginRight: 6,
+    marginRight: 8,
+    shadowColor: "#e4e9f9",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.4,
+    shadowRadius: 3,
+    elevation: 2,
   },
   
   searchButton: {
-    backgroundColor: "#007AFF",
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 6,
-    marginLeft: 2,
+    backgroundColor: "#2e5ecc",
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
+    shadowColor: "#234892",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation: 5,
   },
 });

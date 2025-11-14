@@ -1,12 +1,15 @@
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
+import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { DeviceEventEmitter, StatusBar as RNStatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { DeviceEventEmitter, StatusBar as RNStatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 import 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 function AppHeader() {
   const router = useRouter();
@@ -31,22 +34,26 @@ useEffect(() => {
     <SafeAreaView edges={["top"]} style={{ backgroundColor: "#ffff" }}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.logoBox} onPress={() => router.push('/')}>
-          <Text>로고</Text>
+          <Image
+              source={require('../assets/images/sovoro_logo.png')}
+              style={{ width: 60, height: 60}}
+              resizeMode="contain"
+            />
         </TouchableOpacity>
         
         {isLoggedIn ? (
-          <TouchableOpacity 
-            style={styles.profileBox} 
+          <TouchableOpacity
+            style={styles.profileBox}
             onPress={() => router.push('/profile')}
           >
-            <Text>프로필</Text>
+            <Ionicons name="person-circle-outline" size={40} color="#273042" />
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity 
-            style={styles.profileBox} 
+          <TouchableOpacity
+            style={styles.profileBox}
             onPress={() => router.push('/login')}
           >
-            <Text>로그인</Text>
+            <FontAwesome5 name="sign-in-alt" size={35} color="#273042" />
           </TouchableOpacity>
         )}
       </View>
@@ -92,25 +99,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     height: 56,
-    backgroundColor: "#ffff",
+    backgroundColor: "#fff",
   },
 
   logoBox: {
-    width: 70,
-    height: 40,
-    backgroundColor: "#f2f2f2",
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 8,
   },
 
   profileBox: {
-    width: 80,
-    height: 40,
-    backgroundColor: "#f2f2f2",
+    width: 45,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 8,
   }
 
 });

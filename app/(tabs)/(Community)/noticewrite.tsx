@@ -76,25 +76,30 @@ const styles = StyleSheet.create({
 
   container: { 
     flex: 1, 
-    padding: 16, 
-    backgroundColor: '#fff' 
-    },
+    padding: 20,
+    backgroundColor: "#fff",
+  },
 
-  title: { 
-    fontSize: 22, 
-    fontWeight: 'bold', 
-    marginBottom: 20 
-    },
+  title: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#2c3e50",
+    marginBottom: 24,
+  },
 
   input: {
-    borderWidth: 1,
-    borderColor: '#bbb',
-    borderRadius: 7,
-    marginBottom: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    backgroundColor: "#f4f6fb",
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
     fontSize: 16,
-    backgroundColor: '#fafafa',
-  }
+    marginBottom: 20,
+    color: "#34495e",
+    shadowColor: "#b0c4de",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 3,
+  },
 
 });

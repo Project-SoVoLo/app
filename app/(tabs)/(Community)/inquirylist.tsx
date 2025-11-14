@@ -69,76 +69,74 @@ export default function InquiryList() {
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingTop: 20,
+    paddingTop: 24,
   },
 
   contentBox: {
-    flex: 0,
-    width: "90%",
-    borderRadius: 12,
-    paddingBottom: 8,
-    elevation: 1,
+    width: "92%",
+    borderRadius: 16,
+    paddingBottom: 12,
+    backgroundColor: "#fff",
+  },
+
+  title: {
+    fontSize: 24,
+    fontWeight: "700",
+    marginBottom: 22,
+    color: "#253858",
+    marginLeft: 8,
+  },
+
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 14,
+    width: "100%",
+    paddingHorizontal: 8,
+  },
+
+  backButtonText: {
+    fontSize: 17,
+    color: "#2c3e50",
+    fontWeight: "600",
+  },
+
+  addButton: {
+    padding: 8,
   },
 
   sectionBox: {
     width: "100%",
-    borderRadius: 10,
+    borderRadius: 14,
     marginBottom: 30,
   },
 
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: "#000",
-    marginLeft: 4,
-  },
-
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 6,
-    width: "100%",
-  },
-
   postItem: {
-    padding: 12,
-    borderWidth: 0.5,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    marginBottom: 12,
-    backgroundColor: '#fafafa',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 18,
+    backgroundColor: "#f4f6fb",
+    shadowColor: "#a3c4f3",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.14,
+    shadowRadius: 6,
+    elevation: 3,
   },
 
   postTitle: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#222",
-    marginBottom: 3,
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#2e3e62",
+    marginBottom: 6,
   },
 
   postUser: {
-    fontSize: 12,
-    color: "#666",
+    fontSize: 13,
+    color: "#62718d",
   },
-
-  backButton: {
-    marginBottom: 16,
-  },
-
-  backButtonText: {
-    fontSize: 16,
-    color: "#000",
-  },
-
-  addButton: {
-    marginBottom: 16,
-  }
-
 });

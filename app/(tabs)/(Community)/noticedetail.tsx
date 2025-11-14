@@ -158,7 +158,12 @@ useEffect(() => {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+          style={{ flex: 1, backgroundColor: "#fff" }}
+          contentContainerStyle={{ paddingBottom: 60 }}
+        >
+          <View style={styles.container}>
+      <View style={styles.contentBox}>
       {isAdmin && (
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 8 }}>
           <TouchableOpacity onPress={() => setOptionsVisible(true)}>
@@ -244,84 +249,139 @@ useEffect(() => {
           </View>
         </View>
       </Modal>
+      </View>
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-
-  container: { 
-    flex: 1, 
-    padding: 16, 
-    backgroundColor: '#fff' 
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    paddingTop: 24,
+    paddingBottom: 30,
   },
 
-  title: { 
-    fontSize: 22, 
-    fontWeight: 'bold',
-    marginBottom: 12 },
-
-  date: { 
-    fontSize: 14, 
-    color: '#666', 
-    marginBottom: 20 
+  contentBox: {
+    width: "92%",
+    backgroundColor: "#f4f6fb",
+    borderRadius: 16,
+    paddingVertical: 24,
+    paddingHorizontal: 18,
+    elevation: 3,
+    shadowColor: "#a3c4f3",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.18,
+    shadowRadius: 6,
+    marginBottom: 28,
   },
 
-  content: { 
-    fontSize: 16, 
-    lineHeight: 22 
+  title: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#2c3e50",
+    marginBottom: 24,
+  },
+
+  date: {
+    fontSize: 14,
+    color: "#62718d",
+    marginBottom: 30,
+  },
+
+  content: {
+    fontSize: 16,
+    color: "#34495e",
+    marginBottom: 20,
+    lineHeight: 23,
   },
 
   modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0.35)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   optionsModal: {
-    backgroundColor: '#f2f2f2',
-    borderRadius: 10,
-    paddingVertical: 8,
-    minWidth: 110,
-    marginTop: 30,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    minWidth: 140,
+    marginTop: 32,
     marginRight: 24,
+    elevation: 6,
+    shadowColor: "#244aab",
+    shadowOffset: { width: 0, height: 7 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
   },
 
   optionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 18,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 14,
   },
 
   optionText: {
-    fontSize: 15,
-    marginLeft: 10,
-    color: '#222',
+    fontSize: 16,
+    color: "#2c3e50",
+    marginLeft: 14,
+    fontWeight: "600",
   },
 
   editModal: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 10,
-    width: 300,
+    backgroundColor: "#fff",
+    padding: 24,
+    borderRadius: 16,
+    width: 320,
+    shadowColor: "#2c3e50",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.22,
+    shadowRadius: 14,
+    elevation: 7,
   },
 
   input: {
+    backgroundColor: "#fafafa",
     borderWidth: 1,
-    borderColor: '#bbb',
-    borderRadius: 7,
-    marginBottom: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    borderColor: "#cbd2e0",
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
     fontSize: 16,
-    backgroundColor: '#fafafa',
+    marginBottom: 20,
+    color: "#34495e",
   },
 
   modalButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  }
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
 
+  likeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+
+  likeCount: {
+    marginLeft: 8,
+    fontWeight: "600",
+    fontSize: 17,
+    color: "#e0245e",
+  },
+
+  backButtonText: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "#2c3e50",
+  },
+
+  optionsIcon: {
+    padding: 8,
+  },
 });

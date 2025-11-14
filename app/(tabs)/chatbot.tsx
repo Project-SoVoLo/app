@@ -258,19 +258,23 @@ export default function ChatScreen() {
 }
 
 const styles = StyleSheet.create({
-
   messagesArea: {
     flex: 1,
-    paddingHorizontal: 12,
-    marginTop: 20,
+    paddingHorizontal: 14,
+    marginTop: 22,
   },
 
   messageBubble: {
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    marginBottom: 10,
-    maxWidth: '80%',
+    borderRadius: 16,
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    marginBottom: 12,
+    maxWidth: '78%',
+    shadowColor: '#a3c4f3',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 3,
   },
 
   userBubble: {
@@ -279,66 +283,83 @@ const styles = StyleSheet.create({
   },
   
   botBubble: {
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#f4f6fb",
     alignSelf: "flex-start",
   },
 
   userText: {
     color: "#fff",
     fontSize: 16,
+    lineHeight: 22,
   },
 
   botText: {
-    color: "#000",
+    color: "#1c1c1e",
     fontSize: 16,
+    lineHeight: 22,
   },
 
   inputBar: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 10,
-    paddingVertical: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     marginBottom: 80,
-    borderTopWidth: 1,
-    borderColor: "#E5E5EA",
-    backgroundColor: "#F8F8F8"
   },
 
   voiceBtn: {
-    padding: 8,
-    marginRight: 5,
+    padding: 10,
+    marginRight: 8,
+    backgroundColor: "#f0f0f0",
+    borderRadius: 30,
+    shadowColor: '#00000025',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.18,
+    shadowRadius: 6,
+    elevation: 4,
   },
 
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: "#DDD",
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: Platform.OS === 'ios' ? 10 : 8,
+    borderColor: "#ccc",
+    borderRadius: 24,
+    paddingHorizontal: 18,
+    paddingVertical: Platform.OS === 'ios' ? 12 : 10,
     backgroundColor: "#fff",
-    marginRight: 8,
+    marginRight: 10,
     fontSize: 16,
+    color: '#222',
+    shadowColor: '#babcc0',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 2,
   },
 
   sendBtn: {
     backgroundColor: "#007AFF",
-    borderRadius: 20,
-    padding: 10,
+    borderRadius: 24,
+    padding: 12,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#005ec4',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    elevation: 6,
   },
 
   loadingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,
+    paddingVertical: 8,
   },
 
   loadingText: {
-    marginLeft: 10,
-    color: '#666'
-  }
-  
+    marginLeft: 12,
+    color: '#555',
+    fontSize: 15,
+  },
 });

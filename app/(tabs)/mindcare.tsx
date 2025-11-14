@@ -105,71 +105,84 @@ const fetchCenters = async (latitude, longitude) => {
 
 const styles = StyleSheet.create({
   container: { 
-    padding: 20, 
+    padding: 24, 
     backgroundColor: '#fff', 
-    flexGrow: 1 
+    flexGrow: 1,
   },
 
   title: { 
-    fontSize: 20, 
-    fontWeight: 'bold', 
-    marginBottom: 16, 
-    color: '#222' 
+    fontSize: 24, 
+    fontWeight: '700', 
+    marginBottom: 20, 
+    color: '#2c3e50' 
   },
 
   loadingText: { 
-    fontSize: 15, 
-    marginVertical: 10, 
-    color: '#555' 
+    fontSize: 16, 
+    marginVertical: 14, 
+    color: '#6c7a93', 
+    alignSelf: 'center',
   },
   
   noResult: { 
-    fontSize: 15, 
-    marginVertical: 10, 
-    color: '#777' 
+    fontSize: 16, 
+    marginVertical: 14, 
+    color: '#95a1b5', 
+    alignSelf: 'center',
+    fontStyle: 'italic',
   },
   
   centerItem: { 
     backgroundColor: '#f4f6fb', 
-    borderRadius: 11, 
-    marginBottom: 16, 
-    padding: 13 
+    borderRadius: 16, 
+    marginBottom: 18, 
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    shadowColor: '#a3c4f3',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 4,
   },
   
   centerName: { 
-    fontSize: 17, 
-    fontWeight: 'bold', 
-    color: '#1544ad', 
-    marginBottom: 5 
+    fontSize: 18, 
+    fontWeight: '700', 
+    color: '#3758a3', 
+    marginBottom: 6 
   },
   
   centerInfo: { 
     fontSize: 14, 
-    color: '#444', 
-    marginBottom: 2 
+    color: '#374151', 
+    marginBottom: 4 
   },
 
   reloadButton: { 
-    marginTop: 16, 
+    marginTop: 24, 
     alignSelf: 'center', 
-    backgroundColor: '#4d77d6', 
-    paddingVertical: 9, 
-    paddingHorizontal: 23, 
-    borderRadius: 6, 
-    marginBottom: 90 
+    backgroundColor: '#3b68d6', 
+    paddingVertical: 14, 
+    paddingHorizontal: 28, 
+    borderRadius: 12, 
+    marginBottom: 100,
+    shadowColor: '#2a4aa1',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.28,
+    shadowRadius: 12,
+    elevation: 8,
   },
 
   reloadButtonText: { 
-    color: '#fff', 
-    fontWeight: 'bold', 
-    fontSize: 15 
+    color: '#f4f7fc', 
+    fontWeight: '700', 
+    fontSize: 17, 
   },
   
   map: {
     width: '100%',
-    height: 200,
-    marginBottom: 16,
-    borderRadius: 10,
-  }
-
+    height: 220,
+    marginBottom: 20,
+    borderRadius: 16,
+  },
 });

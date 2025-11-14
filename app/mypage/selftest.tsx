@@ -125,54 +125,69 @@ export default function SelfTest() {
         )} */}
          
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor : "#fff",
-        paddingHorizontal: 16,
-        paddingTop: 20,
-    },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    paddingHorizontal: 24,
+    paddingTop: 30,
+  },
 
-    title: {
-      fontSize: 28,
-      fontWeight: 'bold',
-      marginBottom: 30,
-    },
-    
-    backButton: {
-        marginBottom: 16,
-    },
-    
-    backButtonText: {
-        fontSize: 16,
-        color: "#000",
-    },
-      infoBox: {
+  title: {
+    fontSize: 30,
+    fontWeight: "700",
+    marginBottom: 36,
+    color: "#253858",
+  },
+
+  backButton: {
     marginBottom: 20,
-    },
-  
-    infoLabel: {
-      fontSize: 16,
-      color: '#888',
-    },
-    
-    infoText: {
-      fontSize: 20,
-      marginTop: 4,
-    },
-    
-    sectionTitle: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginBottom: 8,
-    },
-    
-    itemBox: {
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    marginBottom: 10,
-    backgroundColor: '#f9f9f9',
-    },
+  },
 
+  backButtonText: {
+    fontSize: 17,
+    color: "#2c3e50",
+    fontWeight: "600",
+  },
+
+  infoBox: {
+    marginBottom: 24,
+  },
+
+  infoLabel: {
+    fontSize: 16,
+    color: "#7f8a9a",
+    fontWeight: "600",
+  },
+
+  infoText: {
+    fontSize: 20,
+    marginTop: 8,
+    color: "#34495e",
+    fontWeight: "500",
+  },
+
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: 14,
+    color: "#2c3e50",
+  },
+
+  itemBox: {
+    padding: 16,
+    borderRadius: 14,
+    marginBottom: 16,
+    backgroundColor: "#f4f6fb",
+    shadowColor: "#a3c4f3",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 7,
+    elevation: 4,
+  },
+
+  itemText: {
+    fontSize: 15,
+    color: "#34495e",
+    marginBottom: 6,
+  },
 });

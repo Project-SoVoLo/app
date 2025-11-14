@@ -332,10 +332,11 @@ export default function CommunityDetail() {
 
   return (
     <ScrollView
-      style={{ flex: 1, backgroundColor: "#fff" }}
-      contentContainerStyle={{ paddingBottom: 60 }}
-    >
-      <View style={styles.container}>
+              style={{ flex: 1, backgroundColor: "#fff" }}
+              contentContainerStyle={{ paddingBottom: 60 }}
+            >
+              <View style={styles.container}>
+          <View style={styles.contentBox}>
         {isOwner && (
           <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 8 }}>
             <TouchableOpacity onPress={() => setOptionsVisible(true)}>
@@ -565,64 +566,152 @@ export default function CommunityDetail() {
           </View>
         </Modal>
       </View>
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 12 },
-  date: { fontSize: 14, color: '#666', marginBottom: 12 },
-  content: { fontSize: 16, lineHeight: 22, marginBottom: 6 },
-  image: { width: '100%', height: 160, borderRadius: 7, marginBottom: 12 },
-  commentsSection: { marginTop: 24 },
-  commentsTitle: { fontWeight: '600', marginBottom: 8 },
-  commentItem: { marginBottom: 8 },
-  commentDate: { fontSize: 12, color: '#666' },
-  commentForm: { marginTop: 20 },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    paddingTop: 24,
+    paddingBottom: 30,
+  },
+
+  contentBox: {
+    width: "92%",
+    backgroundColor: "#f4f6fb",
+    borderRadius: 16,
+    paddingVertical: 24,
+    paddingHorizontal: 18,
+    elevation: 3,
+    shadowColor: "#a3c4f3",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.18,
+    shadowRadius: 6,
+    marginBottom: 28,
+  },
+
+  title: {
+    fontSize: 22,
+    fontWeight: "700",
+    marginBottom: 12,
+    color: "#2c3e50",
+  },
+
+  date: {
+    fontSize: 14,
+    color: "#62718d",
+    marginBottom: 12,
+  },
+
+  content: {
+    fontSize: 16,
+    lineHeight: 22,
+    marginBottom: 12,
+    color: "#34495e",
+  },
+
+  image: {
+    width: "100%",
+    height: 160,
+    borderRadius: 7,
+    marginBottom: 12,
+  },
+
+  commentsSection: {
+    marginTop: 24,
+  },
+
+  commentsTitle: {
+    fontWeight: "600",
+    marginBottom: 8,
+    fontSize: 16,
+    color: "#2c3e50",
+  },
+
+  commentItem: {
+    backgroundColor: "#f9fafc",
+    borderRadius: 10,
+    padding: 14,
+    marginBottom: 14,
+    shadowColor: "#b0c4de",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+
+  commentDate: {
+    fontSize: 12,
+    color: "#7f8c8d",
+  },
+
+  commentForm: {
+    marginTop: 20,
+  },
+
   input: {
-    borderColor: '#ccc', borderWidth: 1, borderRadius: 6, padding: 10, marginVertical: 16
+    borderColor: "#cbd2e0",
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 12,
+    fontSize: 16,
+    backgroundColor: "#fafafa",
+    marginBottom: 16,
   },
 
   modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0.3)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   optionsModal: {
-    backgroundColor: '#f2f2f2',
-    borderRadius: 10,
-    paddingVertical: 8,
-    minWidth: 110,
+    backgroundColor: "#f4f6fb",
+    borderRadius: 14,
+    paddingVertical: 14,
+    minWidth: 140,
     marginTop: 30,
     marginRight: 24,
+    shadowColor: "#a3c4f3",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    elevation: 4,
   },
 
   optionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 18,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 14,
+    paddingHorizontal: 20,
   },
 
   optionText: {
-    fontSize: 15,
-    marginLeft: 10,
-    color: '#222',
+    fontSize: 16,
+    marginLeft: 14,
+    color: "#2c3e50",
+    fontWeight: "600",
   },
 
   editModal: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 10,
-    width: 300,
+    backgroundColor: "#fff",
+    borderRadius: 14,
+    padding: 20,
+    width: 320,
+    shadowColor: "#253858",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.22,
+    shadowRadius: 12,
+    elevation: 6,
   },
 
   modalButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
   },
-
 });
