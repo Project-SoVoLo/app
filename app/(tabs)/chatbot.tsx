@@ -21,7 +21,10 @@ export default function ChatScreen() {
   const [token, setToken] = useState(null); 
   const router = useRouter();
   const flatListRef = useRef(null);
+  const [userEmail, setUserEmail] = useState(null);
   
+  const [emotionType, setEmotionType] = useState(null); //감정 유형 상태 추가
+
   useFocusEffect(
     useCallback(() => {
       const checkLoginStatus = async () => {
@@ -30,6 +33,8 @@ export default function ChatScreen() {
         }
         const userToken = await AsyncStorage.getItem('token');
         setToken(userToken);
+        const userEmail = await AsyncStorage.getItem('userEmail');
+        setUserEmail(userEmail);
         if (!userToken) {
           alertShown.current = true;
           Alert.alert(
@@ -63,6 +68,8 @@ export default function ChatScreen() {
   const handleSend = async (textToSend = input) => {
     if (!textToSend.trim()) return;
 
+    console.log("사용자 메시지 전송:", textToSend);
+    console.log("사용자 이메일 전송:", userEmail);
     const userMsg = { id: generateUniqueId(), from: "user", text: textToSend };
     setMessages(prev => [userMsg, ...prev]);
     setInput("");
@@ -83,7 +90,8 @@ export default function ChatScreen() {
     
     try {
       //API 요청 시 사용자 식별자가 필요하면 추가 (예: AsyncStorage에서 가져오기)
-      const res = await axios.post(apiUrl, { text: textToSend, sender: "userEmail" });
+      const res = await axios.post(apiUrl, { text: textToSend, sender: userEmail });
+      console.log(res.data);
       const rasaResponses = res.data.response;
 
       const botMessages = (Array.isArray(rasaResponses)
@@ -99,8 +107,20 @@ export default function ChatScreen() {
       setMessages(prev => [...botMessages, ...prev]);
       setConversationPhase(nextPhase);
 
+
+    //   // emotionType 감지
+    // const detectedEmotion = botMessages.find(msg => msg.text.includes('(end positive)')) ? 'POSITIVE' :
+    //                         botMessages.find(msg => msg.text.includes('(end neutral)')) ? 'NEUTRAL' :
+    //                         botMessages.find(msg => msg.text.includes('(end negative)')) ? 'NEGATIVE' :
+    //                         null;
+    
+    // if (detectedEmotion) {
+    //   setEmotionType(detectedEmotion);
+    // }
+
+
       if (isEndAction(botMessages)) {
-        await saveChatSummary([userMsg, ...botMessages]);
+        await saveChatSummary(messages);
       }
     } catch (err) {
       const errorMsg = { id: generateUniqueId(), from: "bot", text: "서버 응답에 실패했습니다." };
@@ -109,27 +129,37 @@ export default function ChatScreen() {
     }
     setLoading(false);
   };
-  
-  const isEndAction = (responses) => {
-    return responses.some(
-      (res) =>
-        res.action === "utter_end_chat_positive" ||
-        res.action === "utter_end_chat_neutral" ||
-        res.action === "utter_end_chat_negative"
-    );
-  };
 
-  const saveChatSummary = async (finalMessages) => {
-    const chatLog = finalMessages
-      .map((msg) => `${msg.from === "user" ? "나" : "챗봇"}: ${msg.text}`)
-      .join("\n");
-    try {
-      await axios.post("/api/mypage/chat-summaries", { chatLog });
-      console.log("✅ 대화 요약 저장 완료");
-    } catch (err) {
-      console.error("❌ 요약 저장 실패", err);
-    }
-  };
+  
+  //챗봇에서 end point 액션 반환 없음 : 텍스트에서 end 키워드 감지
+  const isEndAction = (responses) => {
+  return responses.some(
+    (res) =>
+      res.action === "utter_end_chat_positive" ||
+      res.action === "utter_end_chat_neutral" ||
+      res.action === "utter_end_chat_negative" ||
+      (res.text && res.text.includes("(end"))
+  );
+};
+
+
+  const saveChatSummary = async (allMessages) => {
+  const chatLog = allMessages
+    .slice()
+    .reverse()
+    .map((msg) => `${msg.from === "user" ? "나" : "챗봇"}: ${msg.text}`)
+    .join("\n"); // 모든 메시지를 \n으로 연결
+
+    const requestData = { chatLog};
+    console.log("💬 대화 요약 저장 요청 데이터:", requestData);
+  try {
+    await axios.post("/api/mypage/chat-summaries", { chatLog, emotionType });
+    console.log("✅ 대화 요약 저장 완료");
+  } catch (err) {
+    console.error("❌ 요약 저장 실패", err);
+  }
+};
+
 
   const handleWhisperToggle = async () => {
     const { status } = await Audio.requestPermissionsAsync();

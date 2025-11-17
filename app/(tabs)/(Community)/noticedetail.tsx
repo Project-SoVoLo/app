@@ -74,7 +74,7 @@ useEffect(() => {
 
 
   useEffect(() => {
-  if (authLoading) return; //토큰 로딩
+  if (authLoading) return;
 
   if (!postId || !authToken) {
     if (!authToken) {
@@ -84,7 +84,6 @@ useEffect(() => {
     return;
   }
 
-  //토큰 유무 확인 -> api 호출
   setLoading(true);
   axios.get(`/api/notice/${postId}`, {
     headers: { Authorization: `Bearer ${authToken}` }

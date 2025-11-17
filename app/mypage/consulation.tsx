@@ -35,7 +35,7 @@ export default function Consulation() {
     })
       .then(res => {
         setData(res.data);
-        // console.log(res.data);
+        console.log(res.data);
       })
       .catch(err => {
         Alert.alert("오류", "내역을 불러오지 못했습니다.");
@@ -87,6 +87,8 @@ return (
           <Text>날짜: {item.date}</Text>
           <Text>감정: {item.emotionKo}</Text>
           <Text>PHQ 점수: {item.phqScore}</Text>
+          <Text>상담 요약: {item.summary}</Text>
+          <Text>챗봇 피드백: {item.feedback}</Text>
         </View>
       ))
     ) : (
