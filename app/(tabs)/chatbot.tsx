@@ -7,7 +7,7 @@ import { ActivityIndicator, Alert, FlatList, KeyboardAvoidingView, Platform, Sty
 import axios from "../api/axios";
 
 
-const WHISPER_API_URL = "http://192.168.0.102:5002/api/whisper";
+const WHISPER_API_URL = "http://13.125.43.47:5002/api/whisper";
 
 export default function ChatScreen() {
   const [messages, setMessages] = useState([]);

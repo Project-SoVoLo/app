@@ -20,8 +20,8 @@ import axios from './api/axios';
 import { useUserStore } from './store/userStore';
 
 const KAKAO_REST_API_KEY = Constants.expoConfig?.extra?.KAKAO_REST_API_KEY;
-// const REDIRECT_URI = 'http://13.125.43.47:8080/api/oauth/kakao/callback';
-const REDIRECT_URI = 'http://192.168.0.102:8080/api/oauth/kakao/callback';
+const REDIRECT_URI = 'http://13.125.43.47:8080/api/oauth/kakao/callback';
+// const REDIRECT_URI = 'http://192.168.0.102:8080/api/oauth/kakao/callback';
 const USED_CODES_KEY = 'processedAuthCodes';
 
 const getKakaoAuthUrl = () =>

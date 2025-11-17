@@ -2,19 +2,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { DeviceEventEmitter } from 'react-native';
 
-// const instance = axios.create({
-//   baseURL: 'http://13.125.43.47:8080',
-//   headers: {
-//     'Content-Type': 'application/json',
-//   }
-// });
-
 const instance = axios.create({
-  baseURL: 'http://192.168.0.102:8080',
+  baseURL: 'http://13.125.43.47:8080',
   headers: {
     'Content-Type': 'application/json',
   }
 });
+
+// const instance = axios.create({
+//   baseURL: 'http://192.168.0.102:8080',
+//   headers: {
+//     'Content-Type': 'application/json',
+//   }
+// });
 
 instance.interceptors.request.use(
   async (config) => {
